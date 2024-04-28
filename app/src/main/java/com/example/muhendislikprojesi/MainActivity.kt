@@ -33,6 +33,9 @@ import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.muhendislikprojesi.PanelParts.Duyurular
+import com.example.muhendislikprojesi.PanelParts.GecmisUyarilar
+import com.example.muhendislikprojesi.PanelParts.KayitliCihazlar
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 
 class MainActivity : ComponentActivity() {
@@ -55,20 +58,29 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SayfaGecisleri(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "MainPanel"){
+    NavHost(navController = navController, startDestination = "Duyurular"){
         composable("LoginPanel"){
             LoginPanel(navController=navController)
         }
         composable("MainPanel"){
             MainPanel(navController = navController)
         }
+            composable("Duyurular"){
+                Duyurular(navController = navController)
+            }
+            composable("GecmisUyarilar"){
+                GecmisUyarilar(navController = navController)
+            }
+            composable("KayitliCihazlar"){
+                KayitliCihazlar(navController = navController)
+            }
     }
 
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun SayfaGecisleriPreview() {
     MuhendislikProjesiTheme {
         SayfaGecisleri()
     }

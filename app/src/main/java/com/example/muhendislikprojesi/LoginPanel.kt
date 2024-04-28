@@ -24,11 +24,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 
+@Preview
+@Composable
+fun LoginPanelPreview(){
+    MuhendislikProjesiTheme {
+        SayfaGecisleri()
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
-    Surface (color = colorResource(id = R.color.Gri)){
+    Surface (color = colorResource(id = R.color.Tenrengi)){
 
         val tfKullaniciAdi = remember {
             mutableStateOf("")
@@ -45,7 +53,7 @@ fun LoginPanel(navController: NavController) {
             //Logonun Olduğu Kısım
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "", modifier = Modifier.size(180.dp))
+                contentDescription = "", modifier = Modifier.size(200.dp))
 
             //Kullanıcı Adı Text Field Olduğu Kısım
             Column {
@@ -55,7 +63,8 @@ fun LoginPanel(navController: NavController) {
                     onValueChange = { tfKullaniciAdi.value = it },
                     label = { Text(text = "Kullanıcı Adı") },
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White
+                        containerColor = colorResource(id = R.color.KahveRengi),
+                        cursorColor = colorResource(id = R.color.KoyuMavi)
                     )
                 )
             }
@@ -68,7 +77,7 @@ fun LoginPanel(navController: NavController) {
                     onValueChange = { tfSifre.value = it },
                     label = { Text(text = "Sifre") },
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.White
+                        containerColor = colorResource(id = R.color.KahveRengi)
                     )
                 )
             }
@@ -81,7 +90,7 @@ fun LoginPanel(navController: NavController) {
 
                              },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Green,
+                    containerColor = colorResource(id = R.color.KoyuMavi),
                     contentColor = Color.White
                 ),
                 modifier = Modifier.size(250.dp,50.dp)
