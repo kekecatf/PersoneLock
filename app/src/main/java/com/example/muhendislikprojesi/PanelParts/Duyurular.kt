@@ -48,10 +48,10 @@ fun Duyurular(navController: NavController){
         content = {
             Column (modifier = Modifier.fillMaxSize()){
                 Card (modifier = Modifier.fillMaxWidth().size(200.dp).padding(top = 100.dp)){
-                    Text(text = "Sa")
+                    Text(text = "Selam")
                 }
                 Card (modifier = Modifier.fillMaxWidth().size(200.dp).padding(top = 50.dp)){
-                    Text(text = "Sa")
+                    Text(text = "Selam")
                 }
             }
         }

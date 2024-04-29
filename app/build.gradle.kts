@@ -72,7 +72,10 @@ dependencies {
 
     //Retrofit Kütüphane(Gradle içine)
     implementation("com.squareup.retrofit2:retrofit:2.6.0")
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.retrofit2:converter-gson:2.5.0")
+
+    //Sayfalar arası veri transferi(Nesne Tabanlı)(Gradlenin içine)
+    implementation("com.google.code.gson:gson:2.10.1")
 
 }
