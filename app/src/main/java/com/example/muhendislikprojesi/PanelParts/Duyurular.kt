@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -47,11 +48,20 @@ fun Duyurular(navController: NavController){
         },
         content = {
             Column (modifier = Modifier.fillMaxSize()){
-                Card (modifier = Modifier.fillMaxWidth().size(200.dp).padding(top = 100.dp)){
+                Card (modifier = Modifier
+                    .fillMaxWidth()
+                    .size(200.dp)
+                    .padding(top = 100.dp)){
                     Text(text = "Selam")
                 }
-                Card (modifier = Modifier.fillMaxWidth().size(200.dp).padding(top = 50.dp)){
+                Card (modifier = Modifier
+                    .fillMaxWidth()
+                    .size(200.dp)
+                    .padding(top = 50.dp)){
                     Text(text = "Selam")
+                }
+                Button(onClick = { navController.popBackStack() }) {
+                    Text(text = "Geri Dön")
                 }
             }
         }

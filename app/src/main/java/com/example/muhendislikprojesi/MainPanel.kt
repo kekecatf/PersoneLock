@@ -1,7 +1,10 @@
 package com.example.muhendislikprojesi
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +47,13 @@ fun MainPanelPreview(){
 
 @Composable
 fun MainPanel(navController: NavController){
+
+    val activity =(LocalContext.current as Activity )
+
+    //Geri Tuşu İşlevi
+    BackHandler (onBack = {
+        activity.finish()
+    })
 
     val switchDurum = remember {
         mutableStateOf(false)
@@ -100,43 +111,24 @@ fun MainPanel(navController: NavController){
 
         }
 
-        /*
-        //Ek Mesai Tercih Kartının Olduğu Kısım
-        Card (modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp)
-            .size(100.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = colorResource(id = R.color.AcikMavi),
-                contentColor = colorResource(id = R.color.Tenrengi))){
-            Row (modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center){
-                Text(text = "EK MESAİ TERCİH DURUMU")
-                Switch(
-                    checked = switchDurum.value,
-                    onCheckedChange = {
-                        switchDurum.value=it
-                    }, modifier = Modifier.padding(start = 25.dp))
-            }
-        }
-
-         */
-        
         //Dururuların Olduğu Kısım
         Card (modifier = Modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp)
             .size(100.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = colorResource(id = R.color.AcikMavi),
-                contentColor = colorResource(id = R.color.Tenrengi))){
-            Row (modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center){
-                Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
+        colors = CardDefaults.cardColors(
+            containerColor = colorResource(id = R.color.AcikMavi),
+            contentColor = colorResource(id = R.color.Tenrengi))){
+        Row (modifier = Modifier
+            .fillMaxSize()
+            .clickable { navController.navigate("Duyurular") },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center){
+            Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
             }
         }
+
+
 
         //Geçmiş Uyarıların Olduğu Kısım
         Card (modifier = Modifier
@@ -146,11 +138,12 @@ fun MainPanel(navController: NavController){
             colors = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.AcikMavi),
                 contentColor = colorResource(id = R.color.Tenrengi))){
-            Row (modifier = Modifier.fillMaxSize(),
+            Row (modifier = Modifier
+                .fillMaxSize()
+                .clickable { navController.navigate("GecmisUyarilar") },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center){
-                Text(text = "GEÇMİŞ UYARILAR --->")
-
+                Text(text = "GEÇMİŞ UYARILAR --->", modifier = Modifier.padding(start = 25.dp))
             }
         }
         
@@ -162,20 +155,22 @@ fun MainPanel(navController: NavController){
             colors = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.AcikMavi),
                 contentColor = colorResource(id = R.color.Tenrengi))){
-            Row (modifier = Modifier.fillMaxSize(),
+            Row (modifier = Modifier
+                .fillMaxSize()
+                .clickable { navController.navigate("KayitliCihazlar") },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center){
-                Text(text = "KAYITLI CİHAZLAR", modifier = Modifier.padding(start = 25.dp))
+                Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
             }
         }
 
-        //Giriş Ekranına Dönme Butonu
+        //Login Ekranına Dönme Butonu
         Button(onClick = { navController.navigate("LoginPanel") }) {
             Text(text = "Login Ekranı")
         }
 
-        //Çıkış Butonu
-        Button(onClick = { navController.popBackStack() }) {
+        //Uygulamayı Kapatma Butonu
+        Button(onClick = { activity.finish() }) {
             Text(text = "Çıkış")
         }
         

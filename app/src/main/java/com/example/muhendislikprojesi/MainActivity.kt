@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun SayfaGecisleri(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Duyurular"){
+    NavHost(navController = navController, startDestination = "LoginPanel"){
         composable("LoginPanel"){
             LoginPanel(navController=navController)
         }
