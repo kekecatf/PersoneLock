@@ -78,4 +78,7 @@ dependencies {
     //Sayfalar arası veri transferi(Nesne Tabanlı)(Gradlenin içine)
     implementation("com.google.code.gson:gson:2.10.1")
 
+    //İcon ekleme
+    implementation ("androidx.compose.material:material-icons-extended")
+
 }
