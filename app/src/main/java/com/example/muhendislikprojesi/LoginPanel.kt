@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,7 +32,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.muhendislikprojesi.Retrofit.ApiUtils
+import com.example.muhendislikprojesi.Retrofit.Veriler
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @Preview
 @Composable
@@ -43,6 +49,10 @@ fun LoginPanelPreview(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
+    LaunchedEffect(key1 = true) {
+        tumVeriler()
+    }
+
     Surface (color = colorResource(id = R.color.Tenrengi)){
 
         val tfKullaniciAdi = remember {
@@ -118,3 +128,18 @@ fun LoginPanel(navController: NavController) {
     }
 }
 
+fun tumVeriler(){
+    val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
+
+    kisilerDaoInterface.tumVeriler().enqueue(object : Callback<Veriler> {
+        override fun onResponse(call: Call<Veriler>, response: Response<Veriler>) {
+            val sonuc = response.body()?.departmentID
+
+            Log.e("sonuc", sonuc.toString())
+        }
+
+        override fun onFailure(call: Call<Veriler>, t: Throwable) {
+
+        }
+    })
+}

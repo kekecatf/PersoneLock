@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,7 +37,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.muhendislikprojesi.PanelParts.Duyurular
 import com.example.muhendislikprojesi.PanelParts.GecmisUyarilar
 import com.example.muhendislikprojesi.PanelParts.KayitliCihazlar
+import com.example.muhendislikprojesi.Retrofit.ApiUtils
+import com.example.muhendislikprojesi.Retrofit.Veriler
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +63,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SayfaGecisleri(){
+
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "LoginPanel"){
         composable("LoginPanel"){
@@ -77,6 +84,7 @@ fun SayfaGecisleri(){
     }
 
 }
+
 
 @Preview(showBackground = true)
 @Composable
