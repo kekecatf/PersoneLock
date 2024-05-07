@@ -1,7 +1,10 @@
 package com.example.muhendislikprojesi
 
 import android.annotation.SuppressLint
+
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,11 +59,15 @@ fun LoginPanelPreview(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
+
     //retrofit kısmı
     LaunchedEffect(key1 = true) {
         tumVeriler()
         Log.e("deneme","123")
+
     }
+
+
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -157,9 +164,9 @@ fun tumVeriler(){
 
     kisilerDaoInterface.tumVeriler().enqueue(object : Callback<Veriler> {
         override fun onResponse(call: Call<Veriler>, response: Response<Veriler>) {
-            val sonuc = response.body()?.departmentID
+            val sonuc = response.body()?.firstName
 
-            Log.e("sonuc", sonuc.toString())
+            Log.e("sonuc", sonuc!!)
         }
 
         override fun onFailure(call: Call<Veriler>, t: Throwable) {
