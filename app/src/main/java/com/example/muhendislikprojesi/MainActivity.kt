@@ -16,14 +16,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.muhendislikprojesi.PanelParts.Duyurular
 import com.example.muhendislikprojesi.PanelParts.GecmisUyarilar
 import com.example.muhendislikprojesi.PanelParts.KayitliCihazlar
-import com.example.muhendislikprojesi.Retrofit.Comments
-import com.example.muhendislikprojesi.Retrofit.MyApi
+import com.example.muhendislikprojesi.Retrofit.ApiUtils
+import com.example.muhendislikprojesi.Retrofit.Veriler
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +42,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SayfaGecisleri(){
-    getAllComments()
+    tumVeriler()
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "LoginPanel"){
-        composable("LoginPanel"){
+        composable("LoginPanel"
+        ){
             LoginPanel(navController=navController)
         }
-        composable("MainPanel"){
+        composable("MainPanel"
+            ){
             MainPanel(navController = navController)
         }
             composable("Duyurular"){
@@ -66,28 +66,22 @@ fun SayfaGecisleri(){
 }
 
 //Retrofit Kısmı
-private fun getAllComments(){
-    val BASE_URL = "https://trackingprojectwebappservice20240505190044.azurewebsites.net/"
-    val TAG:String = "CHECK_RESPONSE"
-    val api = Retrofit
-        .Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build().create(MyApi::class.java)
+fun tumVeriler(){
+    val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
 
-    api.getComments().enqueue(object : Callback<List<Comments>> {
-        override fun onResponse(call: Call<List<Comments>>, response: Response<List<Comments>>) {
+    kisilerDaoInterface.getComments().enqueue(object : Callback<List<Veriler>> {
+        override fun onResponse(call: Call<List<Veriler>>, response: Response<List<Veriler>>) {
             if (response.isSuccessful){
                 response.body()?.let {
                     for (comment in it){
-                        Log.i(TAG,"onResponse: ${comment.firstName}")
+                        Log.i("etiket","onResponse: ${comment.id}")
                     }
                 }
             }
         }
 
-        override fun onFailure(call: Call<List<Comments>>, t: Throwable) {
-            Log.i(TAG,"onFailure: ${t.message}")
+        override fun onFailure(call: Call<List<Veriler>>, t: Throwable) {
+            Log.i("etiket","onFailure: ${t.message}")
         }
     })
 }

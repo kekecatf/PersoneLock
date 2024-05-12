@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
-
+    
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     Scaffold (
@@ -104,7 +104,6 @@ fun LoginPanel(navController: NavController) {
 
                             )
                     }
-
                     //Giriş Butonu Olduğu Kısım
                     Button(onClick = { Log.e("Buton ","Giris yapildi")
                         if (tfKullaniciAdi.value=="admin"&&tfSifre.value=="0000"){
