@@ -73,7 +73,8 @@ fun MainPanel(navController: NavController){
                 colors = CardDefaults.cardColors(
                     containerColor = colorResource(id = R.color.KoyuMavi))
             ){
-                Image(painter = painterResource(id = R.drawable.biyometrik), contentDescription = "",Modifier.padding(top = 20.dp))
+                Image(painter = painterResource(id = R.drawable.biyometrik),
+                    contentDescription = "",Modifier.padding(top = 20.dp))
             }
             Card ( modifier = Modifier
                 .weight(60f)

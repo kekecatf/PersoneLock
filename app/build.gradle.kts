@@ -82,5 +82,4 @@ dependencies {
     //İcon ekleme
     implementation ("androidx.compose.material:material-icons-extended")
 
-
 }

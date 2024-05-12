@@ -40,8 +40,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.muhendislikprojesi.Retrofit.ApiUtils
-import com.example.muhendislikprojesi.Retrofit.Veriler
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -59,15 +57,6 @@ fun LoginPanelPreview(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
-
-    //retrofit kısmı
-    LaunchedEffect(key1 = true) {
-        tumVeriler()
-        Log.e("deneme","123")
-
-    }
-
-
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -156,21 +145,4 @@ fun LoginPanel(navController: NavController) {
         }
     )
 
-}
-
-//retrofit kısmı
-fun tumVeriler(){
-    val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
-
-    kisilerDaoInterface.tumVeriler().enqueue(object : Callback<Veriler> {
-        override fun onResponse(call: Call<Veriler>, response: Response<Veriler>) {
-            val sonuc = response.body()?.firstName
-
-            Log.e("sonuc", sonuc!!)
-        }
-
-        override fun onFailure(call: Call<Veriler>, t: Throwable) {
-
-        }
-    })
 }
