@@ -33,13 +33,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 
-@Preview
-@Composable
-fun MainPanelPreview(){
-    MuhendislikProjesiTheme {
-        SayfaGecisleri()
-    }
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,7 +120,6 @@ fun MainPanel(navController: NavController){
         }
 
 
-
         //Geçmiş Uyarıların Olduğu Kısım
         Card (modifier = Modifier
             .fillMaxWidth()
@@ -171,7 +163,13 @@ fun MainPanel(navController: NavController){
         Button(onClick = { activity.finish() }) {
             Text(text = "Çıkış")
         }
-        
     }
+}
 
+@Preview
+@Composable
+fun MainPanelPreview(){
+    MuhendislikProjesiTheme {
+        SayfaGecisleri()
+    }
 }

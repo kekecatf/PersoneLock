@@ -3,7 +3,8 @@ package com.example.muhendislikprojesi.Retrofit
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface VerilerDaoInterface {
+interface MyApi {
     @GET("api/Employee")
-    fun tumVeriler(): Call<Veriler>
+    fun getComments(): Call<List<Comments>>
+
 }
