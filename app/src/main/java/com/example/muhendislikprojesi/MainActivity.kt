@@ -67,9 +67,9 @@ fun SayfaGecisleri(){
 
 //Retrofit Kısmı
 fun tumVeriler(){
-    val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
+    val verilerDaoInterface = ApiUtils.getVerilerDaoInterface()
 
-    kisilerDaoInterface.getComments().enqueue(object : Callback<List<Veriler>> {
+    verilerDaoInterface.getComments().enqueue(object : Callback<List<Veriler>> {
         override fun onResponse(call: Call<List<Veriler>>, response: Response<List<Veriler>>) {
             if (response.isSuccessful){
                 response.body()?.let {

@@ -67,7 +67,7 @@ fun LoginPanel(navController: NavController) {
 
                     //Logonun Olduğu Kısım
                     Image(
-                        painter = painterResource(id = R.drawable.logo),
+                        painter = painterResource(id = R.drawable.logo2),
                         contentDescription = "", modifier = Modifier.size(200.dp))
 
                     //Kullanıcı Adı Text Field Olduğu Kısım
