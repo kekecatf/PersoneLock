@@ -82,5 +82,9 @@ dependencies {
     //İcon ekleme
     implementation ("androidx.compose.material:material-icons-extended")
 
+    implementation("androidx.compose.ui:ui-text-android:1.6.7")
+    implementation("androidx.compose.foundation:foundation-android:1.6.7")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+
 
 }

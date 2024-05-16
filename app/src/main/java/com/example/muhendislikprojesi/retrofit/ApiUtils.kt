@@ -1,4 +1,4 @@
-package com.example.muhendislikprojesi.Retrofit
+package com.example.retrofitdeneme6.retrofit
 
 class ApiUtils {
     companion object{

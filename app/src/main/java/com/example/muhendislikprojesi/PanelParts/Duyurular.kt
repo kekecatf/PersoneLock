@@ -1,6 +1,7 @@
 package com.example.muhendislikprojesi.PanelParts
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +30,8 @@ import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 @Composable
 fun DuyurularPreview(){
     MuhendislikProjesiTheme {
-        SayfaGecisleri()
+        SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed,securityStamp ->
+            Log.d("MainActivity", "departmentID: $departmentID, firstName: $firstName, id: $id, email: $email, userName: $userName, emailConfirmed: $emailConfirmed")}
     }
 }
 

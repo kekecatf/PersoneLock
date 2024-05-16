@@ -137,6 +137,7 @@ fun LoginPanel(navController: NavController) {
 @Composable
 fun LoginPanelPreview(){
     MuhendislikProjesiTheme {
-        SayfaGecisleri()
+        SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed,securityStamp ->
+            Log.d("MainActivity", "departmentID: $departmentID, firstName: $firstName, id: $id, email: $email, userName: $userName, emailConfirmed: $emailConfirmed")}
     }
 }

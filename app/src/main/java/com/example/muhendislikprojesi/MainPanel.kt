@@ -2,6 +2,7 @@ package com.example.muhendislikprojesi
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -99,7 +100,6 @@ fun MainPanel(navController: NavController){
                     fontSize = 18.sp)
 
             }
-
         }
 
         //Dururuların Olduğu Kısım
@@ -170,6 +170,7 @@ fun MainPanel(navController: NavController){
 @Composable
 fun MainPanelPreview(){
     MuhendislikProjesiTheme {
-        SayfaGecisleri()
+        SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed,securityStamp ->
+            Log.d("MainActivity", "departmentID: $departmentID, firstName: $firstName, id: $id, email: $email, userName: $userName, emailConfirmed: $emailConfirmed")}
     }
 }
