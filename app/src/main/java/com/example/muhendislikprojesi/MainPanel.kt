@@ -21,8 +21,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,12 +36,44 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
+import com.example.retrofitdeneme6.retrofit.ApiUtils
+import com.example.retrofitdeneme6.retrofit.ResponseMessage
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPanel(navController: NavController){
+
+    //Retrofit Verileri
+    var firstName by remember { mutableStateOf("") }
+    var departmentID by remember { mutableStateOf(0) }
+    var id by remember { mutableStateOf(0) }
+    var email by remember { mutableStateOf("") }
+    var userName by remember { mutableStateOf("") }
+    var emailConfirmed by remember { mutableStateOf(false) }
+    var securityStamp by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        val sonuc = getVeri()
+        if (sonuc != null) {
+            departmentID = sonuc.departmentID
+            firstName = sonuc.firstName
+            id = sonuc.id
+            email = sonuc.email
+            userName = sonuc.userName
+            emailConfirmed = sonuc.emailConfirmed
+            securityStamp = sonuc.securityStamp
+        } else {
+            // Hata durumu
+            Log.e("SuccessScreen", "Veriler alınamadı")
+        }
+    }
 
     val activity =(LocalContext.current as Activity )
 
@@ -74,7 +109,7 @@ fun MainPanel(navController: NavController){
                 .height(200.dp),colors = CardDefaults.cardColors(
                 containerColor = colorResource(id = R.color.KoyuMavi)
             )) {
-                Text(text = "KSÜ BM",
+                Text(text = "$departmentID",
                     color = colorResource(id = R.color.KahveRengi),
                     fontSize = 18.sp)
                 Text(text = "Takip Sistemine",
@@ -83,7 +118,7 @@ fun MainPanel(navController: NavController){
                 Text(text = "Hoş Geldiniz",
                     color = colorResource(id = R.color.KahveRengi),
                     fontSize = 18.sp)
-                Text(text = "Atıf Kekeç",
+                Text(text = "$firstName",
                     color = colorResource(id = R.color.Tenrengi),
                     fontSize = 18.sp)
                 Text(text = "En Son Giriş Tarihi:",
@@ -166,11 +201,37 @@ fun MainPanel(navController: NavController){
     }
 }
 
+//RETROFİT KISMI
+//Get İşlemi
+suspend fun getVeri(): ResponseMessage? {
+    return suspendCoroutine { continuation ->
+        val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
+        kisilerDaoInterface.getComments().enqueue(object : Callback<List<ResponseMessage>> {
+            override fun onResponse(call: Call<List<ResponseMessage>>, response: Response<List<ResponseMessage>>) {
+                if (response.isSuccessful) {
+                    val verilerListesi = response.body()
+                    if (!verilerListesi.isNullOrEmpty()) {
+                        val veri = verilerListesi[0]
+                        continuation.resume(veri)
+                    } else {
+                        continuation.resume(null)
+                    }
+                } else {
+                    continuation.resume(null)
+                }
+            }
+
+            override fun onFailure(call: Call<List<ResponseMessage>>, t: Throwable) {
+                continuation.resume(null)
+            }
+        })
+    }
+}
+
 @Preview
 @Composable
 fun MainPanelPreview(){
     MuhendislikProjesiTheme {
-        SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed,securityStamp ->
-            Log.d("MainActivity", "departmentID: $departmentID, firstName: $firstName, id: $id, email: $email, userName: $userName, emailConfirmed: $emailConfirmed")}
+        SayfaGecisleri()
     }
 }

@@ -7,5 +7,6 @@ data class ResponseMessage(
     val email: String,
     val userName: String,
     val emailConfirmed: Boolean,
-    val securityStamp: String
+    val securityStamp: String,
+    val lastName:String
 )

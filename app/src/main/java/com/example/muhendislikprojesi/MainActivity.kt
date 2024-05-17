@@ -45,8 +45,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed, securityStamp ->
-                    }
+                    SayfaGecisleri()
                 }
             }
         }
@@ -54,38 +53,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SayfaGecisleri(onDataReceived: (Int, String, Int, String, String, Boolean,String) -> Unit){
-
-    //    var departmentID by remember { mutableStateOf(0) }
-//    var firstName by remember { mutableStateOf("") }
-//    var id by remember { mutableStateOf(0) }
-//    var email by remember { mutableStateOf("") }
-//    var userName by remember { mutableStateOf("") }
-//    var emailConfirmed by remember { mutableStateOf(false) }
-//    var securityStamp by remember { mutableStateOf("") }
-//
-//    LaunchedEffect(Unit) {
-//        val sonuc = getVeri()
-//        if (sonuc != null) {
-//            departmentID = sonuc.departmentID
-//            firstName = sonuc.firstName
-//            id = sonuc.id
-//            email = sonuc.email
-//            userName = sonuc.userName
-//            emailConfirmed = sonuc.emailConfirmed
-//            securityStamp = sonuc.securityStamp
-//
-//            onDataReceived(departmentID, firstName, id, email, userName, emailConfirmed,securityStamp)
-//        } else {
-//            // Hata durumu
-//            Log.e("AnaFonksiyon", "Veriler alınamadı")
-//        }
-//
-//    }
-
+fun SayfaGecisleri(){
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "LoginPanel"){
+    NavHost(navController = navController, startDestination = "MainPanel"){
         composable("LoginPanel"
         ){
             LoginPanel(navController=navController)
@@ -105,48 +76,12 @@ fun SayfaGecisleri(onDataReceived: (Int, String, Int, String, String, Boolean,St
             }
     }
 }
-//RETROFİT KISMI
-//Get İşlemi
-suspend fun getVeri(): ResponseMessage? {
-    return suspendCoroutine { continuation ->
-        val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
-        kisilerDaoInterface.getComments().enqueue(object : Callback<List<ResponseMessage>> {
-            // onResponse fonksiyonu içinde atama işlemleri
-            override fun onResponse(call: Call<List<ResponseMessage>>, response: Response<List<ResponseMessage>>) {
-                if (response.isSuccessful) {
-                    val verilerListesi = response.body()
-                    if (!verilerListesi.isNullOrEmpty()) {
-                        // İlk Veriler nesnesine erişme
-                        val veri = verilerListesi[0]
-                        val departmentID = veri.departmentID
-                        val firstName = veri.firstName
-                        val id = veri.id
-                        val email = veri.email
-                        val userName = veri.userName
-                        val emailConfirmed = veri.emailConfirmed
-                        val securityStamp = veri.securityStamp
-                        // Yapılacak işlemler...
-                        continuation.resume(ResponseMessage(departmentID, firstName, id, email, userName, emailConfirmed,securityStamp))
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<List<ResponseMessage>>, t: Throwable) {
-                Log.i("etiket","onFailure: ${t.message}")
-                continuation.resume(null) // Hata durumunda null döndürme
-            }
-        })
-    }
-}
-
-
 
 
 @Preview(showBackground = true)
 @Composable
 fun SayfaGecisleriPreview() {
     MuhendislikProjesiTheme {
-        SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed,securityStamp ->
-            Log.d("MainActivity", "departmentID: $departmentID, firstName: $firstName, id: $id, email: $email, userName: $userName, emailConfirmed: $emailConfirmed")}
+        SayfaGecisleri()
     }
 }

@@ -30,8 +30,7 @@ import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 @Composable
 fun DuyurularPreview(){
     MuhendislikProjesiTheme {
-        SayfaGecisleri { departmentID, firstName, id, email, userName, emailConfirmed,securityStamp ->
-            Log.d("MainActivity", "departmentID: $departmentID, firstName: $firstName, id: $id, email: $email, userName: $userName, emailConfirmed: $emailConfirmed")}
+        SayfaGecisleri ()
     }
 }
 
