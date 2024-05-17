@@ -55,41 +55,33 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SayfaGecisleri(onDataReceived: (Int, String, Int, String, String, Boolean,String) -> Unit){
-    var departmentID by remember { mutableStateOf(0) }
-    var firstName by remember { mutableStateOf("") }
-    var id by remember { mutableStateOf(0) }
-    var email by remember { mutableStateOf("") }
-    var userName by remember { mutableStateOf("") }
-    var emailConfirmed by remember { mutableStateOf(false) }
-    var securityStamp by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
-        val sonuc = getVeri()
-        if (sonuc != null) {
-            departmentID = sonuc.departmentID
-            firstName = sonuc.firstName
-            id = sonuc.id
-            email = sonuc.email
-            userName = sonuc.userName
-            emailConfirmed = sonuc.emailConfirmed
-            securityStamp = sonuc.securityStamp
-
-            onDataReceived(departmentID, firstName, id, email, userName, emailConfirmed,securityStamp)
-        } else {
-            // Hata durumu
-            Log.e("AnaFonksiyon", "Veriler alınamadı")
-        }
-
-        val email = "atifkekec@personelock.com"
-        val password = "123456789hjK*"
-
-        // addVeri fonksiyonunu çağırarak POST isteği gönder
-        postVeri(email, password)
-    }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(text = "departmentID: $departmentID, İsim: $firstName, id: $id, usernam: $userName, email: $email, securityStamp: $securityStamp")
-    }
+    //    var departmentID by remember { mutableStateOf(0) }
+//    var firstName by remember { mutableStateOf("") }
+//    var id by remember { mutableStateOf(0) }
+//    var email by remember { mutableStateOf("") }
+//    var userName by remember { mutableStateOf("") }
+//    var emailConfirmed by remember { mutableStateOf(false) }
+//    var securityStamp by remember { mutableStateOf("") }
+//
+//    LaunchedEffect(Unit) {
+//        val sonuc = getVeri()
+//        if (sonuc != null) {
+//            departmentID = sonuc.departmentID
+//            firstName = sonuc.firstName
+//            id = sonuc.id
+//            email = sonuc.email
+//            userName = sonuc.userName
+//            emailConfirmed = sonuc.emailConfirmed
+//            securityStamp = sonuc.securityStamp
+//
+//            onDataReceived(departmentID, firstName, id, email, userName, emailConfirmed,securityStamp)
+//        } else {
+//            // Hata durumu
+//            Log.e("AnaFonksiyon", "Veriler alınamadı")
+//        }
+//
+//    }
 
 
     val navController = rememberNavController()
@@ -147,37 +139,6 @@ suspend fun getVeri(): ResponseMessage? {
     }
 }
 
-
-//Post İşlemi
-private fun postVeri(email: String, password: String) {
-    val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
-
-    val json = JSONObject()
-    json.put("email", email)
-    json.put("password", password)
-
-    val requestBody = RequestBody.create("application/json".toMediaType(), json.toString())
-
-    val call = kisilerDaoInterface.addVeri(requestBody)
-    call.enqueue(object : Callback<ApiResponse> {
-        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-            if (response.isSuccessful) {
-                val yeniVeri = response.body()
-                val message = yeniVeri?.message
-                // message değişkeni sunucudan dönen mesajı içerir
-                Log.d("Post İsteği", "Başarılı: $message")
-            } else {
-                // Sunucudan hata dönmesi durumu
-                Log.e("Post İsteği", "Hata: ${response.code()}")
-            }
-        }
-
-        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-            // İstek başarısız olduğunda
-            Log.e("basarisiz","hata")
-        }
-    })
-}
 
 
 

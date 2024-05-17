@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,14 +39,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
+import com.example.retrofitdeneme6.retrofit.ApiResponse
+import com.example.retrofitdeneme6.retrofit.ApiUtils
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
-    
+
+    LaunchedEffect(Unit) {
+        val email = "atifkekec@personelock.com"
+        val password = "123456789hjK*"
+
+        // addVeri fonksiyonunu çağırarak POST isteği gönder
+        postVeri(email, password)
+    }
+
+    //Scankbar(Alttan gelen bildirim) Oluşturma Kısmı
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     Scaffold (
@@ -131,6 +149,37 @@ fun LoginPanel(navController: NavController) {
             }
         }
     )
+}
+//RETROFİT KISMI
+//Post İşlemi
+private fun postVeri(email: String, password: String) {
+    val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
+
+    val json = JSONObject()
+    json.put("email", email)
+    json.put("password", password)
+
+    val requestBody = RequestBody.create("application/json".toMediaType(), json.toString())
+
+    val call = kisilerDaoInterface.addVeri(requestBody)
+    call.enqueue(object : Callback<ApiResponse> {
+        override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+            if (response.isSuccessful) {
+                val yeniVeri = response.body()
+                val message = yeniVeri?.message
+                // message değişkeni sunucudan dönen mesajı içerir
+                Log.d("Post İsteği", "Başarılı: $message")
+            } else {
+                // Sunucudan hata dönmesi durumu
+                Log.e("Post İsteği", "Hata: ${response.code()}")
+            }
+        }
+
+        override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+            // İstek başarısız olduğunda
+            Log.e("basarisiz","hata")
+        }
+    })
 }
 
 @Preview
