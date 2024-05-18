@@ -19,45 +19,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.example.muhendislikprojesi.R
-
-@Composable
-fun getColor(id: Int): Color {
-    return Color(ContextCompat.getColor(LocalContext.current, id))
-}
-
-@SuppressLint("ResourceAsColor")
-private val DarkColors = darkColorScheme(
-    primary = Color(R.color.KoyuMavi),
-    onPrimary = Color(R.color.AcikMavi),
-    primaryContainer = Color(R.color.AcikMavi),
-    onPrimaryContainer = Color(R.color.Tenrengi),
-    background = Color(R.color.Tenrengi),
-    onBackground = Color(R.color.KoyuMavi),
-    surface = Color(R.color.KoyuMavi),
-    onSurface = Color(R.color.AcikMavi)
-)
-
-@SuppressLint("ResourceAsColor")
-private val  LightColors = lightColorScheme(
-    primary = Color(R.color.AcıkTenrengi),
-    onPrimary = Color(R.color.DahaKoyuTenrengi),
-    primaryContainer = Color(R.color.KoyuTenrengi),
-    onPrimaryContainer = Color(R.color.AcıkTenrengi),
-    background = Color(R.color.TuruncumsuTenrengi),
-    onBackground = Color(R.color.KoyuTenrengi),
-    surface = Color(R.color.KoyuTenrengi),
-    onSurface = Color(R.color.DahaKoyuTenrengi)
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+import androidx.compose.material3.*
 
 @Composable
 fun MuhendislikProjesiTheme(
@@ -65,17 +27,39 @@ fun MuhendislikProjesiTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val lightColors = lightColorScheme(
+        primary = colorResource(id = R.color.light_primary),
+        onPrimary = colorResource(id = R.color.light_onPrimary),
+        primaryContainer = colorResource(id = R.color.light_primaryContainer),
+        onPrimaryContainer = colorResource(id = R.color.light_onPrimaryContainer),
+        background = colorResource(id = R.color.light_background),
+        onBackground = colorResource(id = R.color.light_onBackground),
+        surface = colorResource(id = R.color.light_surface),
+        onSurface = colorResource(id = R.color.light_onSurface)
+    )
+
+    val darkColors = darkColorScheme(
+        primary = colorResource(id = R.color.dark_primary),
+        onPrimary = colorResource(id = R.color.dark_onPrimary),
+        primaryContainer = colorResource(id = R.color.dark_primaryContainer),
+        onPrimaryContainer = colorResource(id = R.color.dark_onPrimaryContainer),
+        background = colorResource(id = R.color.dark_background),
+        onBackground = colorResource(id = R.color.dark_onBackground),
+        surface = colorResource(id = R.color.dark_surface),
+        onSurface = colorResource(id = R.color.dark_onSurface)
+    )
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColors
-        else -> LightColors
+        darkTheme -> darkColors
+        else -> lightColors
     }
 
     val view = LocalView.current
-    val statusBarColor = colorResource(id = R.color.Gri).toArgb()
+    val statusBarColor = colorScheme.primary.toArgb()
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
@@ -90,3 +74,5 @@ fun MuhendislikProjesiTheme(
         content = content
     )
 }
+
+

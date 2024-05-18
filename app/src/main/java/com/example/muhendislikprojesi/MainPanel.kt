@@ -7,6 +7,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,9 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,6 +63,10 @@ fun MainPanel(navController: NavController){
     var emailConfirmed by remember { mutableStateOf(false) }
     var securityStamp by remember { mutableStateOf("") }
 
+    //Tema Değişkenleri
+    val isSystemDarkTheme = isSystemInDarkTheme()
+    var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
+
     LaunchedEffect(Unit) {
         val sonuc = getVeri()
         if (sonuc != null) {
@@ -75,131 +83,182 @@ fun MainPanel(navController: NavController){
         }
     }
 
-    val activity =(LocalContext.current as Activity )
+    val activity = LocalContext.current as Activity
 
     //Geri Tuşu İşlevi
-    BackHandler (onBack = {
+    BackHandler(onBack = {
         activity.finish()
     })
 
-    val switchDurum = remember {
-        mutableStateOf(false)
-    }
-    
-    //Logo ve Kullanıcı Bilgilerinin Olduğu Kısım
-    Column (modifier = Modifier
-        .fillMaxSize()
-        .background(colorResource(id = R.color.Tenrengi)),
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally){
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)){
-            Card ( modifier = Modifier
-                .weight(40f)
-                .height(200.dp)
-                .padding(end = 20.dp),
+    MuhendislikProjesiTheme(darkTheme = isDarkTheme) {
+        //Logo ve Kullanıcı Bilgilerinin Olduğu Kısım
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .weight(40f)
+                        .height(200.dp)
+                        .padding(end = 20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Image(painter = painterResource(id = R.drawable.biyometrik), contentDescription = "", Modifier.padding(top = 20.dp))
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(60f)
+                        .height(200.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(text = "$departmentID",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "Takip Sistemine",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "Hoş Geldiniz",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "$firstName",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "En Son Giriş Tarihi:",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "02.07.2002 ",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "En Son Giriş Saati:",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                        Text(text = "16:07",
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontSize = 18.sp)
+                    }
+                }
+            }
+
+            //Dururuların Olduğu Kısım
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+                    .size(100.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = colorResource(id = R.color.KoyuMavi))
-            ){
-                Image(painter = painterResource(id = R.drawable.biyometrik), contentDescription = "",Modifier.padding(top = 20.dp))
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("Duyurular") },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
+                }
             }
-            Card ( modifier = Modifier
-                .weight(60f)
-                .height(200.dp),colors = CardDefaults.cardColors(
-                containerColor = colorResource(id = R.color.KoyuMavi)
-            )) {
-                Text(text = "$departmentID",
-                    color = colorResource(id = R.color.KahveRengi),
-                    fontSize = 18.sp)
-                Text(text = "Takip Sistemine",
-                    color = colorResource(id = R.color.Tenrengi),
-                    fontSize = 18.sp)
-                Text(text = "Hoş Geldiniz",
-                    color = colorResource(id = R.color.KahveRengi),
-                    fontSize = 18.sp)
-                Text(text = "$firstName",
-                    color = colorResource(id = R.color.Tenrengi),
-                    fontSize = 18.sp)
-                Text(text = "En Son Giriş Tarihi:",
-                    color = colorResource(id = R.color.KahveRengi),
-                    fontSize = 18.sp)
-                Text(text = "02.07.2002 ",
-                    color = colorResource(id = R.color.Tenrengi),
-                    fontSize = 18.sp)
-                Text(text = "En Son Giriş Saati:",
-                    color = colorResource(id = R.color.KahveRengi),
-                    fontSize = 18.sp)
-                Text(text = "16:07",
-                    color = colorResource(id = R.color.Tenrengi),
-                    fontSize = 18.sp)
 
+            //Geçmiş Uyarıların Olduğu Kısım
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+                    .size(100.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("GecmisUyarilar") },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "GEÇMİŞ UYARILAR --->", modifier = Modifier.padding(start = 25.dp))
+                }
             }
-        }
 
-        //Dururuların Olduğu Kısım
-        Card (modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp)
-            .size(100.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = colorResource(id = R.color.AcikMavi),
-            contentColor = colorResource(id = R.color.Tenrengi))){
-        Row (modifier = Modifier
-            .fillMaxSize()
-            .clickable { navController.navigate("Duyurular") },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center){
-            Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
+            //Kayıtlı Cihazların Olduğu Kısım
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+                    .size(100.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("KayitliCihazlar") },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
+                }
             }
-        }
 
+            //Login Ekranına Dönme Butonu
+            Button(
+                onClick = { navController.navigate("LoginPanel") },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(text = "Login Ekranı")
+            }
 
-        //Geçmiş Uyarıların Olduğu Kısım
-        Card (modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp)
-            .size(100.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = colorResource(id = R.color.AcikMavi),
-                contentColor = colorResource(id = R.color.Tenrengi))){
-            Row (modifier = Modifier
-                .fillMaxSize()
-                .clickable { navController.navigate("GecmisUyarilar") },
+            //Uygulamayı Kapatma Butonu
+            Button(
+                onClick = { activity.finish() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(text = "Çıkış")
+            }
+
+            // Tema Değiştirme Switchi
+            Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center){
-                Text(text = "GEÇMİŞ UYARILAR --->", modifier = Modifier.padding(start = 25.dp))
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "Tema Değiştir: ", color = MaterialTheme.colorScheme.onBackground)
+                Switch(
+                    checked = isDarkTheme,
+                    onCheckedChange = { isDarkTheme = it }
+                )
             }
-        }
-        
-        //Kayıtlı Cihazların Olduğu Kısım
-        Card (modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp)
-            .size(100.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = colorResource(id = R.color.AcikMavi),
-                contentColor = colorResource(id = R.color.Tenrengi))){
-            Row (modifier = Modifier
-                .fillMaxSize()
-                .clickable { navController.navigate("KayitliCihazlar") },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center){
-                Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
-            }
-        }
-
-        //Login Ekranına Dönme Butonu
-        Button(onClick = { navController.navigate("LoginPanel") }) {
-            Text(text = "Login Ekranı")
-        }
-
-        //Uygulamayı Kapatma Butonu
-        Button(onClick = { activity.finish() }) {
-            Text(text = "Çıkış")
         }
     }
 }
+
+
 
 //RETROFİT KISMI
 //Get İşlemi

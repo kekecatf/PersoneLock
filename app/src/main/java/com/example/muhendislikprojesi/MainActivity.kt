@@ -40,14 +40,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MuhendislikProjesiTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    SayfaGecisleri()
-                }
-            }
+            SayfaGecisleri()
         }
     }
 }
@@ -56,7 +49,7 @@ class MainActivity : ComponentActivity() {
 fun SayfaGecisleri(){
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "LoginPanel"){
+    NavHost(navController = navController, startDestination = "MainPanel"){
         composable("LoginPanel"
         ){
             LoginPanel(navController=navController)

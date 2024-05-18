@@ -24,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -73,27 +74,29 @@ import kotlin.coroutines.suspendCoroutine
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPanel(navController: NavController) {
-    //Tema İçin Gerekli Değişkenler
+
+    //Tema Değişkenleri
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
-    //Snackbar İçin Gerekli Değişkenler
+
+    //Snackbar Değişkenleri
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    //Veriler Değişkenleri
+
+    //Veri Değişkenleri
     var userEmail by remember { mutableStateOf("") }
     var userPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    //Enter İşlevi İçin Değişken
+
     val focusManager = LocalFocusManager.current
 
-    MuhendislikProjesiTheme(darkTheme = isDarkTheme){
+    MuhendislikProjesiTheme(darkTheme = isDarkTheme) {
         Scaffold(
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             },
             content = {
-                Surface(color = MaterialTheme.colorScheme.onPrimary) {
-
+                Surface(color = MaterialTheme.colorScheme.background) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.SpaceEvenly,
@@ -111,16 +114,15 @@ fun LoginPanel(navController: NavController) {
                                 isDarkTheme = it
                             }
                         )
-
                         Column {
-                            //Kullanıcı Adı TextField Olduğu Kısım
+                            //KullanıcıAdı TextField Olduğu Kısım
                             TextField(
                                 value = userEmail,
                                 onValueChange = { userEmail = it },
                                 label = { Text(text = "Kullanıcı Adı") },
                                 colors = TextFieldDefaults.textFieldColors(
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    cursorColor = MaterialTheme.colorScheme.onPrimary
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    cursorColor = MaterialTheme.colorScheme.onSurface
                                 ),
                                 keyboardOptions = KeyboardOptions(
                                     imeAction = ImeAction.Next,
@@ -131,7 +133,6 @@ fun LoginPanel(navController: NavController) {
                                 )
                             )
                         }
-
                         Column {
                             //Şifre TextField Olduğu Kısım
                             TextField(
@@ -139,8 +140,8 @@ fun LoginPanel(navController: NavController) {
                                 onValueChange = { userPassword = it },
                                 label = { Text(text = "Sifre") },
                                 colors = TextFieldDefaults.textFieldColors(
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    cursorColor = MaterialTheme.colorScheme.onPrimary
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                    cursorColor = MaterialTheme.colorScheme.onSurface
                                 ),
                                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(
@@ -148,7 +149,6 @@ fun LoginPanel(navController: NavController) {
                                     keyboardType = KeyboardType.Number
                                 ),
                                 keyboardActions = KeyboardActions(
-                                    //Enter'a basıldığında otomatil giriş yaptığı kısım
                                     onDone = {
                                         focusManager.clearFocus()
                                         CoroutineScope(Dispatchers.Main).launch {
@@ -163,12 +163,11 @@ fun LoginPanel(navController: NavController) {
                                         }
                                     }
                                 ),
-                                //Şifre Görünürlüğü Olduğu Kısım
+                                //Şifre Görünürlüğü Switchi Olduğu Kısım
                                 trailingIcon = {
                                     val image = if (passwordVisible)
                                         painterResource(id = R.drawable.ic_visibility)
                                     else painterResource(id = R.drawable.ic_visibility_off)
-
                                     IconButton(onClick = {
                                         passwordVisible = !passwordVisible
                                     }) {
@@ -192,7 +191,7 @@ fun LoginPanel(navController: NavController) {
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
                             ),
                             modifier = Modifier.size(250.dp, 50.dp)
@@ -204,7 +203,6 @@ fun LoginPanel(navController: NavController) {
             }
         )
     }
-
 }
 
 //RETROFİT KISMI
