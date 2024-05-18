@@ -13,4 +13,12 @@
     <color name="AcikMavi">#3C5B6F</color>
     <color name="KahveRengi">#948979</color>
     <color name="Tenrengi">#DFD0B8</color>
+
+    <color name="AcıkTenrengi">FFF2D7</color>
+    <color name="KoyuTenrengi">FFE0B5</color>
+    <color name="TuruncumsuTenrengi">F8C794</color>
+    <color name="DahaKoyuTenrengi">D8AE7E</color>
+
+
+
 </resources>
