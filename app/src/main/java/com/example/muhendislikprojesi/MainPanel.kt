@@ -49,14 +49,23 @@ import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-
+import android.content.Context
+import android.net.wifi.WifiManager
+import android.os.Build
+import java.net.NetworkInterface
+import java.util.*
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainPanel(navController: NavController){
+fun MainPanel(navController: NavController) {
 
+    //Mac Adresi Bölümü
     val context = LocalContext.current
-    var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
+    var macAddress by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        macAddress = getMacAddress(context)
+        Log.d("MAC Address", macAddress)
+    }
 
     // Retrofit Verileri
     var firstName by remember { mutableStateOf("") }
@@ -66,6 +75,9 @@ fun MainPanel(navController: NavController){
     var userName by remember { mutableStateOf("") }
     var emailConfirmed by remember { mutableStateOf(false) }
     var securityStamp by remember { mutableStateOf("") }
+
+    // Tema Değişkenleri
+    var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
 
     LaunchedEffect(Unit) {
         val sonuc = getVeri()
@@ -102,6 +114,7 @@ fun MainPanel(navController: NavController){
                     .fillMaxWidth()
                     .padding(20.dp)
             ) {
+                //Kullanıcı Fotoğrafı Bölümü
                 Card(
                     modifier = Modifier
                         .weight(40f)
@@ -113,6 +126,7 @@ fun MainPanel(navController: NavController){
                 ) {
                     Image(painter = painterResource(id = R.drawable.biyometrik), contentDescription = "", Modifier.padding(top = 20.dp))
                 }
+                //Kullanıcı Bilgileri Bölümü
                 Card(
                     modifier = Modifier
                         .weight(60f)
@@ -124,7 +138,7 @@ fun MainPanel(navController: NavController){
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = "$departmentID",
+                        Text(text = "mac adres:$macAddress",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 18.sp)
                         Text(text = "Takip Sistemine",
@@ -151,7 +165,7 @@ fun MainPanel(navController: NavController){
                     }
                 }
             }
-
+            //Duyurular Bölümü
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -172,7 +186,7 @@ fun MainPanel(navController: NavController){
                     Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-
+            //Geçmiş Uyarılar Bölümü
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -193,7 +207,7 @@ fun MainPanel(navController: NavController){
                     Text(text = "GEÇMİŞ UYARILAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-
+            //Kayıtlı Cihazlar Bölümü
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -214,7 +228,7 @@ fun MainPanel(navController: NavController){
                     Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-
+            //Login Ekranı Dönüş Butonu Bölümü
             Button(
                 onClick = { navController.navigate("LoginPanel") },
                 colors = ButtonDefaults.buttonColors(
@@ -224,7 +238,7 @@ fun MainPanel(navController: NavController){
             ) {
                 Text(text = "Login Ekranı")
             }
-
+            //Uygulamadan Çıkış Butonu Bölümü
             Button(
                 onClick = { activity.finish() },
                 colors = ButtonDefaults.buttonColors(
@@ -234,7 +248,7 @@ fun MainPanel(navController: NavController){
             ) {
                 Text(text = "Çıkış")
             }
-
+            //Tema Değiştirme Switchi Bölümü
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -252,6 +266,12 @@ fun MainPanel(navController: NavController){
         }
     }
 }
+//Mac Adresi Fonksiyonu
+fun getMacAddress(context: Context): String {
+    val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    return wifiManager.connectionInfo.macAddress
+}
+
 
 
 //RETROFİT KISMI
