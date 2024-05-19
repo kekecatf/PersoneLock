@@ -38,6 +38,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.muhendislikprojesi.storage.getThemePreference
+import com.example.muhendislikprojesi.storage.saveThemePreference
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.retrofitdeneme6.retrofit.ApiUtils
 import com.example.retrofitdeneme6.retrofit.ResponseMessage
@@ -53,7 +55,10 @@ import kotlin.coroutines.suspendCoroutine
 @Composable
 fun MainPanel(navController: NavController){
 
-    //Retrofit Verileri
+    val context = LocalContext.current
+    var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
+
+    // Retrofit Verileri
     var firstName by remember { mutableStateOf("") }
     var departmentID by remember { mutableStateOf(0) }
     var id by remember { mutableStateOf(0) }
@@ -61,10 +66,6 @@ fun MainPanel(navController: NavController){
     var userName by remember { mutableStateOf("") }
     var emailConfirmed by remember { mutableStateOf(false) }
     var securityStamp by remember { mutableStateOf("") }
-
-    //Tema Değişkenleri
-    val isSystemDarkTheme = isSystemInDarkTheme()
-    var isDarkTheme by remember { mutableStateOf(isSystemDarkTheme) }
 
     LaunchedEffect(Unit) {
         val sonuc = getVeri()
@@ -77,20 +78,18 @@ fun MainPanel(navController: NavController){
             emailConfirmed = sonuc.emailConfirmed
             securityStamp = sonuc.securityStamp
         } else {
-            // Hata durumu
             Log.e("SuccessScreen", "Veriler alınamadı")
         }
     }
 
     val activity = LocalContext.current as Activity
 
-    //Geri Tuşu İşlevi
+    // Geri Tuşu İşlevi
     BackHandler(onBack = {
         activity.finish()
     })
 
     MuhendislikProjesiTheme(darkTheme = isDarkTheme) {
-        //Logo ve Kullanıcı Bilgilerinin Olduğu Kısım
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -153,7 +152,6 @@ fun MainPanel(navController: NavController){
                 }
             }
 
-            //Dururuların Olduğu Kısım
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,7 +173,6 @@ fun MainPanel(navController: NavController){
                 }
             }
 
-            //Geçmiş Uyarıların Olduğu Kısım
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -197,7 +194,6 @@ fun MainPanel(navController: NavController){
                 }
             }
 
-            //Kayıtlı Cihazların Olduğu Kısım
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -219,7 +215,6 @@ fun MainPanel(navController: NavController){
                 }
             }
 
-            //Login Ekranına Dönme Butonu
             Button(
                 onClick = { navController.navigate("LoginPanel") },
                 colors = ButtonDefaults.buttonColors(
@@ -230,7 +225,6 @@ fun MainPanel(navController: NavController){
                 Text(text = "Login Ekranı")
             }
 
-            //Uygulamayı Kapatma Butonu
             Button(
                 onClick = { activity.finish() },
                 colors = ButtonDefaults.buttonColors(
@@ -241,7 +235,6 @@ fun MainPanel(navController: NavController){
                 Text(text = "Çıkış")
             }
 
-            // Tema Değiştirme Switchi
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -250,13 +243,15 @@ fun MainPanel(navController: NavController){
                 Text(text = "Tema Değiştir: ", color = MaterialTheme.colorScheme.onBackground)
                 Switch(
                     checked = isDarkTheme,
-                    onCheckedChange = { isDarkTheme = it }
+                    onCheckedChange = {
+                        isDarkTheme = it
+                        saveThemePreference(context, isDarkTheme)
+                    }
                 )
             }
         }
     }
 }
-
 
 
 //RETROFİT KISMI
