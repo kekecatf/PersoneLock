@@ -11,7 +11,6 @@ fun saveThemePreference(context: Context, isDarkTheme: Boolean) {
         apply()
     }
 }
-
 fun getThemePreference(context: Context): Boolean {
     val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
     return sharedPreferences.getBoolean("dark_theme", false)
@@ -26,7 +25,6 @@ fun saveLoginInfo(context: Context, email: String, password: String, rememberMe:
     editor.putBoolean("rememberMe", rememberMe)
     editor.apply()
 }
-
 fun getLoginInfo(context: Context): Triple<String, String, Boolean> {
     val sharedPreferences: SharedPreferences = context.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
     val email = sharedPreferences.getString("email", "") ?: ""

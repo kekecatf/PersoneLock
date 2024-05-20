@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
 fun SayfaGecisleri(){
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "MainPanel"){
+    NavHost(navController = navController, startDestination = "LoginPanel"){
         composable("LoginPanel"
         ){
             LoginPanel(navController=navController)
@@ -47,7 +47,7 @@ fun SayfaGecisleri(){
 }
 
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun SayfaGecisleriPreview() {
     MuhendislikProjesiTheme {

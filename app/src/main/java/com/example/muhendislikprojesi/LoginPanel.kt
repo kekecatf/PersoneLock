@@ -92,7 +92,7 @@ fun LoginPanel(navController: NavController) {
     // Enter İşlevi İçin Değişken
     val focusManager = LocalFocusManager.current
 
-    // Uygulama başladığında SharedPreferences'tan verileri al
+    // Uygulama başladığında Kayıtlı Verileri Al
     LaunchedEffect(Unit) {
         val (savedEmail, savedPassword, savedRememberMe) = getLoginInfo(context)
         if (savedRememberMe) {

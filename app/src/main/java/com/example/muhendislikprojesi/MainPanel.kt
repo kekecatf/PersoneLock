@@ -58,16 +58,19 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPanel(navController: NavController) {
-
-    //Mac Adresi Bölümü
     val context = LocalContext.current
+
+    //Mac Adresi Kısmı
     var macAddress by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         macAddress = getMacAddress(context)
         Log.d("MAC Address", macAddress)
     }
 
-    // Retrofit Verileri
+    //Tema İçin Değişkenler
+    var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
+
+    //Veriler
     var firstName by remember { mutableStateOf("") }
     var departmentID by remember { mutableStateOf(0) }
     var id by remember { mutableStateOf(0) }
@@ -75,9 +78,6 @@ fun MainPanel(navController: NavController) {
     var userName by remember { mutableStateOf("") }
     var emailConfirmed by remember { mutableStateOf(false) }
     var securityStamp by remember { mutableStateOf("") }
-
-    // Tema Değişkenleri
-    var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
 
     LaunchedEffect(Unit) {
         val sonuc = getVeri()
@@ -96,7 +96,7 @@ fun MainPanel(navController: NavController) {
 
     val activity = LocalContext.current as Activity
 
-    // Geri Tuşu İşlevi
+    // Geri tuşu işlevi
     BackHandler(onBack = {
         activity.finish()
     })
@@ -114,7 +114,7 @@ fun MainPanel(navController: NavController) {
                     .fillMaxWidth()
                     .padding(20.dp)
             ) {
-                //Kullanıcı Fotoğrafı Bölümü
+                //Fotoğraf Bölümü
                 Card(
                     modifier = Modifier
                         .weight(40f)
@@ -138,7 +138,7 @@ fun MainPanel(navController: NavController) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = "mac adres:$macAddress",
+                        Text(text = "$departmentID",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 18.sp)
                         Text(text = "Takip Sistemine",
@@ -228,7 +228,7 @@ fun MainPanel(navController: NavController) {
                     Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-            //Login Ekranı Dönüş Butonu Bölümü
+            //Login Ekranına Dönüş Butonu Bölümü
             Button(
                 onClick = { navController.navigate("LoginPanel") },
                 colors = ButtonDefaults.buttonColors(
@@ -238,7 +238,7 @@ fun MainPanel(navController: NavController) {
             ) {
                 Text(text = "Login Ekranı")
             }
-            //Uygulamadan Çıkış Butonu Bölümü
+            //Çıkış Butonu Bölümü
             Button(
                 onClick = { activity.finish() },
                 colors = ButtonDefaults.buttonColors(
@@ -263,16 +263,18 @@ fun MainPanel(navController: NavController) {
                     }
                 )
             }
+
+            // MAC Adresini göstermek için
+            Text(text = "MAC Adresi: $macAddress", color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
-//Mac Adresi Fonksiyonu
+
+//MAC Adresi Alma Fonksiyonu
 fun getMacAddress(context: Context): String {
     val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     return wifiManager.connectionInfo.macAddress
 }
-
-
 
 //RETROFİT KISMI
 //Get İşlemi
