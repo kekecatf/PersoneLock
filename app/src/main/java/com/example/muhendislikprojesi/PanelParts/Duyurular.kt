@@ -23,13 +23,6 @@ import com.example.muhendislikprojesi.R
 import com.example.muhendislikprojesi.SayfaGecisleri
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 
-@Preview
-@Composable
-fun DuyurularPreview(){
-    MuhendislikProjesiTheme {
-        SayfaGecisleri ()
-    }
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,4 +57,12 @@ fun Duyurular(navController: NavController){
             }
         }
     )
+}
+
+@Preview
+@Composable
+fun DuyurularPreview(){
+    MuhendislikProjesiTheme {
+        SayfaGecisleri ()
+    }
 }
