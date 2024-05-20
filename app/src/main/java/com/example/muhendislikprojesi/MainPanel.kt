@@ -52,25 +52,27 @@ import kotlin.coroutines.suspendCoroutine
 import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Build
+import com.example.muhendislikprojesi.storage.clearLoginPreferences
 import java.net.NetworkInterface
 import java.util.*
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainPanel(navController: NavController) {
     val context = LocalContext.current
 
-    //Mac Adresi Kısmı
+    // Mac Adresi Kısmı
     var macAddress by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         macAddress = getMacAddress(context)
         Log.d("MAC Address", macAddress)
     }
 
-    //Tema İçin Değişkenler
+    // Tema İçin Değişkenler
     var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
 
-    //Veriler
+    // Veriler
     var firstName by remember { mutableStateOf("") }
     var departmentID by remember { mutableStateOf(0) }
     var id by remember { mutableStateOf(0) }
@@ -114,7 +116,7 @@ fun MainPanel(navController: NavController) {
                     .fillMaxWidth()
                     .padding(20.dp)
             ) {
-                //Fotoğraf Bölümü
+                // Fotoğraf Bölümü
                 Card(
                     modifier = Modifier
                         .weight(40f)
@@ -126,7 +128,7 @@ fun MainPanel(navController: NavController) {
                 ) {
                     Image(painter = painterResource(id = R.drawable.biyometrik), contentDescription = "", Modifier.padding(top = 20.dp))
                 }
-                //Kullanıcı Bilgileri Bölümü
+                // Kullanıcı Bilgileri Bölümü
                 Card(
                     modifier = Modifier
                         .weight(60f)
@@ -165,7 +167,7 @@ fun MainPanel(navController: NavController) {
                     }
                 }
             }
-            //Duyurular Bölümü
+            // Duyurular Bölümü
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -186,7 +188,7 @@ fun MainPanel(navController: NavController) {
                     Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-            //Geçmiş Uyarılar Bölümü
+            // Geçmiş Uyarılar Bölümü
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -207,7 +209,7 @@ fun MainPanel(navController: NavController) {
                     Text(text = "GEÇMİŞ UYARILAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-            //Kayıtlı Cihazlar Bölümü
+            // Kayıtlı Cihazlar Bölümü
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -228,9 +230,12 @@ fun MainPanel(navController: NavController) {
                     Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
                 }
             }
-            //Login Ekranına Dönüş Butonu Bölümü
+            // Login Ekranına Dönüş Butonu Bölümü
             Button(
-                onClick = { navController.navigate("LoginPanel") },
+                onClick = {
+                    clearLoginPreferences(context)
+                    navController.navigate("LoginPanel")
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -238,7 +243,7 @@ fun MainPanel(navController: NavController) {
             ) {
                 Text(text = "Login Ekranı")
             }
-            //Çıkış Butonu Bölümü
+            // Çıkış Butonu Bölümü
             Button(
                 onClick = { activity.finish() },
                 colors = ButtonDefaults.buttonColors(
@@ -248,7 +253,7 @@ fun MainPanel(navController: NavController) {
             ) {
                 Text(text = "Çıkış")
             }
-            //Tema Değiştirme Switchi Bölümü
+            // Tema Değiştirme Switchi Bölümü
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,

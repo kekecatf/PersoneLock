@@ -17,19 +17,29 @@ fun getThemePreference(context: Context): Boolean {
 }
 
 // Login bilgilerini kaydetmek ve almak için fonksiyonlar
-fun saveLoginInfo(context: Context, email: String, password: String, rememberMe: Boolean) {
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
-    val editor: SharedPreferences.Editor = sharedPreferences.edit()
-    editor.putString("email", email)
-    editor.putString("password", password)
-    editor.putBoolean("rememberMe", rememberMe)
-    editor.apply()
+fun saveLoginPreferences(context: Context, username: String, password: String, rememberMe: Boolean) {
+    val sharedPref = context.getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE)
+    with (sharedPref.edit()) {
+        putString("username", username)
+        putString("password", password)
+        putBoolean("rememberMe", rememberMe)
+        apply()
+    }
 }
-fun getLoginInfo(context: Context): Triple<String, String, Boolean> {
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
-    val email = sharedPreferences.getString("email", "") ?: ""
-    val password = sharedPreferences.getString("password", "") ?: ""
-    val rememberMe = sharedPreferences.getBoolean("rememberMe", false)
-    return Triple(email, password, rememberMe)
+
+fun getLoginPreferences(context: Context): Map<String, Any?> {
+    val sharedPref = context.getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE)
+    val username = sharedPref.getString("username", null)
+    val password = sharedPref.getString("password", null)
+    val rememberMe = sharedPref.getBoolean("rememberMe", false)
+    return mapOf("username" to username, "password" to password, "rememberMe" to rememberMe)
+}
+
+fun clearLoginPreferences(context: Context) {
+    val sharedPref = context.getSharedPreferences("LoginPreferences", Context.MODE_PRIVATE)
+    with (sharedPref.edit()) {
+        clear()
+        apply()
+    }
 }
 

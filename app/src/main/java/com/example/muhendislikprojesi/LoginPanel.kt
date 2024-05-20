@@ -48,9 +48,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.muhendislikprojesi.storage.getLoginInfo
+import com.example.muhendislikprojesi.storage.clearLoginPreferences
+import com.example.muhendislikprojesi.storage.getLoginPreferences
 import com.example.muhendislikprojesi.storage.getThemePreference
-import com.example.muhendislikprojesi.storage.saveLoginInfo
+import com.example.muhendislikprojesi.storage.saveLoginPreferences
 import com.example.muhendislikprojesi.storage.saveThemePreference
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.retrofitdeneme6.retrofit.ApiResponse
@@ -94,11 +95,13 @@ fun LoginPanel(navController: NavController) {
 
     // Uygulama başladığında Kayıtlı Verileri Al
     LaunchedEffect(Unit) {
-        val (savedEmail, savedPassword, savedRememberMe) = getLoginInfo(context)
+        val loginPreferences = getLoginPreferences(context)
+        val savedRememberMe = loginPreferences["rememberMe"] as Boolean
         if (savedRememberMe) {
-            userEmail = savedEmail
-            userPassword = savedPassword
+            userEmail = loginPreferences["username"] as String
+            userPassword = loginPreferences["password"] as String
             rememberMe = savedRememberMe
+            navController.navigate("MainPanel") // Otomatik giriş yap
         }
     }
 
@@ -172,9 +175,9 @@ fun LoginPanel(navController: NavController) {
                                             val success = postVeri(userEmail, userPassword)
                                             if (success) {
                                                 if (rememberMe) {
-                                                    saveLoginInfo(context, userEmail, userPassword, rememberMe)
+                                                    saveLoginPreferences(context, userEmail, userPassword, rememberMe)
                                                 } else {
-                                                    saveLoginInfo(context, "", "", false)
+                                                    clearLoginPreferences(context)
                                                 }
                                                 navController.navigate("MainPanel")
                                             } else {
@@ -217,9 +220,9 @@ fun LoginPanel(navController: NavController) {
                                     val success = postVeri(userEmail, userPassword)
                                     if (success) {
                                         if (rememberMe) {
-                                            saveLoginInfo(context, userEmail, userPassword, rememberMe)
+                                            saveLoginPreferences(context, userEmail, userPassword, rememberMe)
                                         } else {
-                                            saveLoginInfo(context, "", "", false)
+                                            clearLoginPreferences(context)
                                         }
                                         navController.navigate("MainPanel")
                                     } else {
