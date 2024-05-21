@@ -140,7 +140,7 @@ fun MainPanel(navController: NavController) {
                     Column(
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = "$departmentID",
+                        Text(text = "$macAddress",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 18.sp)
                         Text(text = "Takip Sistemine",
@@ -269,8 +269,8 @@ fun MainPanel(navController: NavController) {
                 )
             }
 
-            // MAC Adresini göstermek için
-            Text(text = "MAC Adresi: $macAddress", color = MaterialTheme.colorScheme.onBackground)
+//            // MAC Adresini göstermek için
+//            Text(text = "MAC Adresi: $macAddress", color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
