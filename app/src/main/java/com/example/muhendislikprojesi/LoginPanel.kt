@@ -88,11 +88,15 @@ import kotlin.coroutines.suspendCoroutine
 fun LoginPanel(navController: NavController) {
     val context = LocalContext.current
     val apiService = ApiUtils.getAuthService()
+
+    //Klavye Davranışı İçin Değişkenler
     val focusManager = LocalFocusManager.current
 
+    //Tema İçin Değişkenler
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(getThemePreference(context) || isSystemDarkTheme) }
 
+    //Veri Değişkenleri
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginResult by remember { mutableStateOf<String?>(null) }
@@ -100,6 +104,7 @@ fun LoginPanel(navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
 
+    //Otomatik Bilgileri Doldurma Kısmı
     if (isRememberMeEnabled(context)) {
         val loginInfo = getLoginInfo(context)
         email = loginInfo.email
@@ -108,6 +113,7 @@ fun LoginPanel(navController: NavController) {
     }
 
     MuhendislikProjesiTheme(darkTheme = isDarkTheme) {
+        //Dıştaki Büyük Box
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -122,10 +128,12 @@ fun LoginPanel(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                //Logo Kısmı
                 Image(
                     painter = painterResource(id = R.drawable.logo2),
                     contentDescription = "", modifier = Modifier.size(200.dp)
                 )
+                //E-Mail TextField Kısmı
                 TextField(
                     value = email,
                     onValueChange = { email = it },
@@ -146,6 +154,7 @@ fun LoginPanel(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+                //Şifre TextField Kısmı
                 TextField(
                     value = password,
                     onValueChange = { password = it },
@@ -175,7 +184,7 @@ fun LoginPanel(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
+                //Beni Hatırla Butonu
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -186,7 +195,7 @@ fun LoginPanel(navController: NavController) {
                     )
                     Text(text = "Beni Hatırla")
                 }
-
+                //Tema Değiştirme Switchi
                 Switch(
                     checked = isDarkTheme,
                     onCheckedChange = {
@@ -196,7 +205,7 @@ fun LoginPanel(navController: NavController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
+                //Giriş Butonu
                 Button(
                     onClick = {
                         val loginRequest = LoginRequest(email, password)
@@ -215,12 +224,11 @@ fun LoginPanel(navController: NavController) {
                 ) {
                     Text("Giriş Yap")
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                loginResult?.let {
-                    Text(text = "Result: $it", modifier = Modifier.padding(top = 8.dp))
-                }
+//                Spacer(modifier = Modifier.height(16.dp))
+//                //Post İşlemi Mesajı
+//                loginResult?.let {
+//                    Text(text = "Result: $it", modifier = Modifier.padding(top = 8.dp))
+//                }
             }
         }
     }
