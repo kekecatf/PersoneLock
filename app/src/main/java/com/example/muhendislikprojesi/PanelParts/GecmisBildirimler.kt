@@ -1,4 +1,4 @@
-package com.example.muhendislikprojesi.PanelParts
+package com.example.tokentry.PanelParts
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
@@ -23,20 +23,13 @@ import com.example.muhendislikprojesi.R
 import com.example.muhendislikprojesi.SayfaGecisleri
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 
-@Preview
-@Composable
-fun GecmisUyarilarPreview(){
-    MuhendislikProjesiTheme {
-        SayfaGecisleri ()
-    }
-}
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GecmisUyarilar(navController: NavController){
+fun GecmisBildirimler(navController: NavController){
     Scaffold (
         topBar = {
-            TopAppBar(title = { Text(text = "Geçmiş Uyarılar")},
+            TopAppBar(title = { Text(text = "Geçmiş Bildirimler") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = colorResource(id = R.color.Tenrengi),
                     titleContentColor = colorResource(id = R.color.white)
@@ -63,4 +56,12 @@ fun GecmisUyarilar(navController: NavController){
             }
         }
     )
+}
+
+@Preview
+@Composable
+fun GecmisBildirimlerPreview(){
+    MuhendislikProjesiTheme {
+        SayfaGecisleri()
+    }
 }

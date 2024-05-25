@@ -5,13 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.muhendislikprojesi.PanelParts.Duyurular
-import com.example.muhendislikprojesi.PanelParts.GecmisUyarilar
-import com.example.muhendislikprojesi.PanelParts.KayitliCihazlar
+import androidx.navigation.navArgument
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
+import com.example.tokentry.PanelParts.Duyurular
+import com.example.tokentry.PanelParts.GecmisBildirimler
+import com.example.tokentry.PanelParts.KayitliCihazlar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,29 +25,32 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SayfaGecisleri(){
-
+fun SayfaGecisleri() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "DuyurularPanel"){
-        composable("LoginPanel"
-        ){
-            LoginPanel(navController=navController)
+    NavHost(navController = navController, startDestination = "LoginPanel") {
+        composable("LoginPanel") {
+            LoginPanel(navController = navController)
         }
-        composable("MainPanel"){
-            MainPanel(navController = navController)
+        composable(
+            route = "MainPanel/{token}",
+            arguments = listOf(navArgument("token") {
+                type = NavType.StringType
+            })
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            MainPanel(navController = navController, token = token)
         }
-            composable("Duyurular"){
-                Duyurular(navController = navController)
-            }
-            composable("GecmisUyarilar"){
-                GecmisUyarilar(navController = navController)
-            }
-            composable("KayitliCihazlar"){
-                KayitliCihazlar(navController = navController)
-            }
+        composable("Duyurular") {
+            Duyurular(navController = navController)
+        }
+        composable("GecmisBildirimler") {
+            GecmisBildirimler(navController = navController)
+        }
+        composable("KayitliCihazlar") {
+            KayitliCihazlar(navController = navController)
+        }
     }
 }
-
 
 @Preview
 @Composable

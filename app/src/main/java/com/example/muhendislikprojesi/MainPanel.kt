@@ -38,275 +38,177 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.muhendislikprojesi.storage.getThemePreference
-import com.example.muhendislikprojesi.storage.saveThemePreference
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
-import com.example.retrofitdeneme6.retrofit.ApiUtils
-import com.example.retrofitdeneme6.retrofit.ResponseMessage
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
 import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Build
-import com.example.muhendislikprojesi.storage.clearLoginPreferences
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
+import com.auth0.android.jwt.JWT
+import com.example.tokentry.retrofitt.JWTData
+import com.example.tokentry.storage.getThemePreference
+import com.example.tokentry.storage.saveThemePreference
 import java.net.NetworkInterface
 import java.util.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainPanel(navController: NavController) {
+fun MainPanel(navController: NavController, token: String?) {
     val context = LocalContext.current
+    var jwtData by remember { mutableStateOf<JWTData?>(null) }
+    val focusManager = LocalFocusManager.current
 
-    // Mac Adresi Kısmı
-    var macAddress by remember { mutableStateOf("") }
-    LaunchedEffect(Unit) {
-        macAddress = getMacAddress(context)
-        Log.d("MAC Address", macAddress)
-    }
+    val isSystemDarkTheme = isSystemInDarkTheme()
+    var isDarkTheme by remember { mutableStateOf(getThemePreference(context) || isSystemDarkTheme) }
 
-    // Tema İçin Değişkenler
-    var isDarkTheme by remember { mutableStateOf(getThemePreference(context)) }
-
-    // Veriler
-    var firstName by remember { mutableStateOf("") }
-    var departmentID by remember { mutableStateOf(0) }
-    var id by remember { mutableStateOf(0) }
-    var email by remember { mutableStateOf("") }
-    var userName by remember { mutableStateOf("") }
-    var emailConfirmed by remember { mutableStateOf(false) }
-    var securityStamp by remember { mutableStateOf("") }
-
-    LaunchedEffect(Unit) {
-        val sonuc = getVeri()
-        if (sonuc != null) {
-            departmentID = sonuc.departmentID
-            firstName = sonuc.firstName
-            id = sonuc.id
-            email = sonuc.email
-            userName = sonuc.userName
-            emailConfirmed = sonuc.emailConfirmed
-            securityStamp = sonuc.securityStamp
-        } else {
-            Log.e("SuccessScreen", "Veriler alınamadı")
+    token?.let {
+        jwtData = decodeJWT(it)?.let { decodedJWT ->
+            JWTData(
+                mail = decodedJWT.getClaim("Mail")?.asString() ?: "",
+                username = decodedJWT.getClaim("Username")?.asString() ?: "",
+                name = decodedJWT.getClaim("Name")?.asString() ?: "",
+                role = decodedJWT.getClaim("Role")?.asString() ?: "",
+                userId = decodedJWT.getClaim("UserID")?.asString() ?: "",
+                nbf = decodedJWT.getClaim("nbf")?.asLong() ?: 0L,
+                exp = decodedJWT.getClaim("exp")?.asLong() ?: 0L,
+                issuer = decodedJWT.issuer ?: "",
+                audience = decodedJWT.audience?.joinToString(",") ?: ""
+            )
         }
     }
-
-    val activity = LocalContext.current as Activity
-
-    // Geri tuşu işlevi
-    BackHandler(onBack = {
-        activity.finish()
-    })
-
     MuhendislikProjesiTheme(darkTheme = isDarkTheme) {
-        Column(
+
+        Scaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-            ) {
-                // Fotoğraf Bölümü
-                Card(
-                    modifier = Modifier
-                        .weight(40f)
-                        .height(200.dp)
-                        .padding(end = 20.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(text = "Ana Panel")
+                    },
+                    actions = {
+                        var expanded by remember { mutableStateOf(false) }
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Menu")
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = { navController.navigate("Duyurular") },
+                                text = { Text(text = "Duyurular") })
+                            DropdownMenuItem(
+                                onClick = { navController.navigate("GecmisBildirimler") },
+                                text = { Text(text = "GecmisBildirimler") })
+                            DropdownMenuItem(
+                                onClick = { navController.navigate("KayitliCihazlar") },
+                                text = { Text(text = "KayitliCihazlar") })
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                     )
-                ) {
-                    Image(painter = painterResource(id = R.drawable.biyometrik), contentDescription = "", Modifier.padding(top = 20.dp))
-                }
-                // Kullanıcı Bilgileri Bölümü
-                Card(
+                )
+            },
+            content = { paddingValues ->
+                Column(
                     modifier = Modifier
-                        .weight(60f)
-                        .height(200.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.biyometrik),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .clip(RoundedCornerShape(75.dp))
+                            .border(2.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(75.dp))
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        )
                     ) {
-                        Text(text = "$macAddress",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "Takip Sistemine",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "Hoş Geldiniz",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "$firstName",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "En Son Giriş Tarihi:",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "02.07.2002 ",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "En Son Giriş Saati:",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
-                        Text(text = "16:07",
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 18.sp)
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            jwtData?.let { data ->
+                                Text(text = "${data.role}",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold)
+                                Text(text = "${data.name}",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 16.sp)
+                                Text(text = "${data.mail}",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 14.sp)
+                                Text(text = "ID: ${data.userId}",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    fontSize = 14.sp)
+                            }
+                        }
                     }
-                }
-            }
-            // Duyurular Bölümü
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-                    .size(100.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { navController.navigate("Duyurular") },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "DUYURULAR --->", modifier = Modifier.padding(start = 25.dp))
-                }
-            }
-            // Geçmiş Uyarılar Bölümü
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-                    .size(100.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { navController.navigate("GecmisUyarilar") },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "GEÇMİŞ UYARILAR --->", modifier = Modifier.padding(start = 25.dp))
-                }
-            }
-            // Kayıtlı Cihazlar Bölümü
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp)
-                    .size(100.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { navController.navigate("KayitliCihazlar") },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(text = "KAYITLI CİHAZLAR --->", modifier = Modifier.padding(start = 25.dp))
-                }
-            }
-            // Login Ekranına Dönüş Butonu Bölümü
-            Button(
-                onClick = {
-                    clearLoginPreferences(context)
-                    navController.navigate("LoginPanel")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(text = "Login Ekranı")
-            }
-            // Çıkış Butonu Bölümü
-            Button(
-                onClick = { activity.finish() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(text = "Çıkış")
-            }
-            // Tema Değiştirme Switchi Bölümü
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(text = "Tema Değiştir: ", color = MaterialTheme.colorScheme.onBackground)
-                Switch(
-                    checked = isDarkTheme,
-                    onCheckedChange = {
-                        isDarkTheme = it
-                        saveThemePreference(context, isDarkTheme)
-                    }
-                )
-            }
 
-//            // MAC Adresini göstermek için
-//            Text(text = "MAC Adresi: $macAddress", color = MaterialTheme.colorScheme.onBackground)
-        }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Switch(
+                        checked = isDarkTheme,
+                        onCheckedChange = {
+                            isDarkTheme = it
+                            saveThemePreference(context, it)
+                        }
+                    )
+                }
+            }
+        )
     }
 }
 
-//MAC Adresi Alma Fonksiyonu
-fun getMacAddress(context: Context): String {
-    val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    return wifiManager.connectionInfo.macAddress
-}
 
-//RETROFİT KISMI
-//Get İşlemi
-suspend fun getVeri(): ResponseMessage? {
-    return suspendCoroutine { continuation ->
-        val kisilerDaoInterface = ApiUtils.getVerilerDaoInterface()
-        kisilerDaoInterface.getComments().enqueue(object : Callback<List<ResponseMessage>> {
-            override fun onResponse(call: Call<List<ResponseMessage>>, response: Response<List<ResponseMessage>>) {
-                if (response.isSuccessful) {
-                    val verilerListesi = response.body()
-                    if (!verilerListesi.isNullOrEmpty()) {
-                        val veri = verilerListesi[0]
-                        continuation.resume(veri)
-                    } else {
-                        continuation.resume(null)
-                    }
-                } else {
-                    continuation.resume(null)
-                }
-            }
-
-            override fun onFailure(call: Call<List<ResponseMessage>>, t: Throwable) {
-                continuation.resume(null)
-            }
-        })
+//Token Çözümleme İçin Fonksiyon
+fun decodeJWT(token: String): JWT? {
+    return try {
+        JWT(token)
+    } catch (exception: Exception) {
+        null
     }
 }
+
 
 @Preview
 @Composable

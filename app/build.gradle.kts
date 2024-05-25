@@ -86,5 +86,6 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-android:1.6.7")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
-
+    //Token İçin
+    implementation ("com.auth0.android:jwtdecode:2.0.0")
 }

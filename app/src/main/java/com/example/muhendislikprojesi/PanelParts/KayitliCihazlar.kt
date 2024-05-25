@@ -1,4 +1,4 @@
-package com.example.muhendislikprojesi.PanelParts
+package com.example.tokentry.PanelParts
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
@@ -23,14 +23,6 @@ import androidx.navigation.NavController
 import com.example.muhendislikprojesi.R
 import com.example.muhendislikprojesi.SayfaGecisleri
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
-
-@Preview
-@Composable
-fun LoginPanelPreview(){
-    MuhendislikProjesiTheme {
-        SayfaGecisleri ()
-    }
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,4 +52,12 @@ fun KayitliCihazlar(navController: NavController){
             }
         }
     )
+}
+
+@Preview
+@Composable
+fun LoginPanelPreview(){
+    MuhendislikProjesiTheme {
+        SayfaGecisleri()
+    }
 }
