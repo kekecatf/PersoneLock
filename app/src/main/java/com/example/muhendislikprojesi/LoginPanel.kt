@@ -80,7 +80,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarData
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,14 +93,14 @@ fun LoginPanel(navController: NavController) {
     val context = LocalContext.current
     val apiService = ApiUtils.getAuthService()
 
-    //Klavye Davranışı İçin Değişkenler
+    // Klavye Davranışı İçin Değişkenler
     val focusManager = LocalFocusManager.current
 
-    //Tema İçin Değişkenler
+    // Tema İçin Değişkenler
     val isSystemDarkTheme = isSystemInDarkTheme()
     var isDarkTheme by remember { mutableStateOf(getThemePreference(context) || isSystemDarkTheme) }
 
-    //Veri Değişkenleri
+    // Veri Değişkenleri
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginResult by remember { mutableStateOf<String?>(null) }
@@ -104,7 +108,11 @@ fun LoginPanel(navController: NavController) {
     var passwordVisible by remember { mutableStateOf(false) }
     var rememberMe by remember { mutableStateOf(false) }
 
-    //Otomatik Bilgileri Doldurma Kısmı
+    // SnackbarHostState for displaying Snackbar
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    // Otomatik Bilgileri Doldurma Kısmı
     if (isRememberMeEnabled(context)) {
         val loginInfo = getLoginInfo(context)
         email = loginInfo.email
@@ -113,124 +121,137 @@ fun LoginPanel(navController: NavController) {
     }
 
     MuhendislikProjesiTheme(darkTheme = isDarkTheme) {
-        //Dıştaki Büyük Box
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(Color.White, shape = RoundedCornerShape(10.dp))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                //Logo Kısmı
-                Image(
-                    painter = painterResource(id = R.drawable.logo2),
-                    contentDescription = "", modifier = Modifier.size(200.dp)
-                )
-                //E-Mail TextField Kısmı
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Kullanıcı Adı") },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = colorScheme.background,
-                        unfocusedContainerColor = colorScheme.background,
-                        disabledContainerColor = colorScheme.background,
-                        cursorColor = colorScheme.onBackground,
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Email
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                    )
-                )
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+            content = {
 
-                Spacer(modifier = Modifier.height(16.dp))
-                //Şifre TextField Kısmı
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Şifre") },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = colorScheme.background,
-                        unfocusedContainerColor = colorScheme.background,
-                        disabledContainerColor = colorScheme.background,
-                        cursorColor = colorScheme.onBackground,
-                    ),
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Text
-                    ),
-                    trailingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(id = R.drawable.ic_visibility)
-                        else painterResource(id = R.drawable.ic_visibility_off)
-
-                        IconButton(onClick = {
-                            passwordVisible = !passwordVisible
-                        }) {
-                            Icon(painter = image, contentDescription = null)
-                        }
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                //Beni Hatırla Butonu
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Checkbox(
-                        checked = rememberMe,
-                        onCheckedChange = { rememberMe = it }
-                    )
-                    Text(text = "Beni Hatırla")
-                }
-                //Tema Değiştirme Switchi
-                Switch(
-                    checked = isDarkTheme,
-                    onCheckedChange = {
-                        isDarkTheme = it
-                        saveThemePreference(context, it)
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                //Giriş Butonu
-                Button(
-                    onClick = {
-                        val loginRequest = LoginRequest(email, password)
-                        loginUser(context, loginRequest, apiService, rememberMe) { result, tokenValue ->
-                            loginResult = result
-                            token = tokenValue
-
-                            if (tokenValue != null) {
-                                navController.navigate("MainPanel/$tokenValue")
-                            }
-                        }
-                    },
+                // Dıştaki Büyük Box
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .fillMaxSize()
+                        .background(color = colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text("Giriş Yap")
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .background(colorScheme.background, shape = RoundedCornerShape(10.dp))
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+
+                        // Logo Kısmı
+                        Image(
+                            painter = painterResource(id = R.drawable.logo2),
+                            contentDescription = "", modifier = Modifier.size(200.dp)
+                        )
+
+                        // E-Mail TextField Kısmı
+                        TextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = { Text("Kullanıcı Adı") },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = colorScheme.background,
+                                unfocusedContainerColor = colorScheme.background,
+                                disabledContainerColor = colorScheme.background,
+                                cursorColor = colorScheme.onBackground,
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Email
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                            )
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Şifre TextField Kısmı
+                        TextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = { Text("Şifre") },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = colorScheme.background,
+                                unfocusedContainerColor = colorScheme.background,
+                                disabledContainerColor = colorScheme.background,
+                                cursorColor = colorScheme.onBackground,
+                            ),
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Done,
+                                keyboardType = KeyboardType.Text
+                            ),
+                            trailingIcon = {
+                                val image = if (passwordVisible)
+                                    painterResource(id = R.drawable.ic_visibility)
+                                else painterResource(id = R.drawable.ic_visibility_off)
+
+                                IconButton(onClick = {
+                                    passwordVisible = !passwordVisible
+                                }) {
+                                    Icon(painter = image, contentDescription = null)
+                                }
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Beni Hatırla Butonu
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Checkbox(
+                                checked = rememberMe,
+                                onCheckedChange = { rememberMe = it }
+                            )
+                            Text(text = "Beni Hatırla")
+                        }
+
+                        // Tema Değiştirme Switchi
+                        Switch(
+                            checked = isDarkTheme,
+                            onCheckedChange = {
+                                isDarkTheme = it
+                                saveThemePreference(context, it)
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        // Giriş Butonu
+                        Button(
+                            onClick = {
+                                val loginRequest = LoginRequest(email, password)
+                                loginUser(context, loginRequest, apiService, rememberMe) { result, tokenValue ->
+                                    loginResult = result
+                                    token = tokenValue
+
+                                    if (tokenValue != null) {
+                                        navController.navigate("MainPanel/$tokenValue")
+                                    } else {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(message = "Bilgiler Eksik Ya Da Yanlis")
+                                        }
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        ) {
+                            Text("Giriş Yap")
+                        }
+                    }
                 }
-//                Spacer(modifier = Modifier.height(16.dp))
-//                //Post İşlemi Mesajı
-//                loginResult?.let {
-//                    Text(text = "Result: $it", modifier = Modifier.padding(top = 8.dp))
-//                }
             }
-        }
+        )
+
     }
 }
 

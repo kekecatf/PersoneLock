@@ -20,6 +20,13 @@ fun getLoginInfo(context: Context): LoginRequest {
     val password = sharedPreferences.getString("password", "") ?: ""
     return LoginRequest(email, password)
 }
+fun clearLoginPreferences(context: Context) {
+    val sharedPreferences = context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
+    with (sharedPreferences.edit()) {
+        clear()
+        apply()
+    }
+}
 
 // "Beni Hatırla" seçeneğini kontrol eden fonksiyon
 fun isRememberMeEnabled(context: Context): Boolean {

@@ -64,6 +64,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import com.auth0.android.jwt.JWT
 import com.example.tokentry.retrofitt.JWTData
+import com.example.tokentry.storage.clearLoginPreferences
 import com.example.tokentry.storage.getThemePreference
 import com.example.tokentry.storage.saveThemePreference
 import java.net.NetworkInterface
@@ -193,6 +194,21 @@ fun MainPanel(navController: NavController, token: String?) {
                             saveThemePreference(context, it)
                         }
                     )
+
+                    // Çıkış Butonu
+                    Button(
+                        onClick = {
+                            // "Beni Hatırla" işlevini sıfırla
+                            clearLoginPreferences(context)
+                            // LoginPanel'e dön
+                            navController.navigate("LoginPanel")
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        Text("Hesaptan Çık")
+                    }
                 }
             }
         )
