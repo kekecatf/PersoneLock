@@ -1,6 +1,7 @@
 package com.example.tokentry.PanelParts
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -28,11 +31,15 @@ import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 @Composable
 fun Duyurular(navController: NavController){
     Scaffold (
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         topBar = {
             TopAppBar(title = { Text(text = "Duyurular") },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = colorResource(id = R.color.Tenrengi),
-                    titleContentColor = colorResource(id = R.color.white)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         },
@@ -41,13 +48,21 @@ fun Duyurular(navController: NavController){
                 Card (modifier = Modifier
                     .fillMaxWidth()
                     .size(200.dp)
-                    .padding(top = 100.dp)){
+                    .padding(top = 100.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                    ){
                     Text(text = "Selam")
                 }
                 Card (modifier = Modifier
                     .fillMaxWidth()
                     .size(200.dp)
-                    .padding(top = 50.dp)){
+                    .padding(top = 50.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    )
+                    ){
                     Text(text = "Selam")
                 }
                 Button(onClick = { navController.popBackStack() }) {
