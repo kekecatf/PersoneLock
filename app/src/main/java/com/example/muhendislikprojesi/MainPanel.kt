@@ -59,14 +59,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import com.auth0.android.jwt.JWT
+import com.example.tokentry.retrofitt.ApiUtils
 import com.example.tokentry.retrofitt.JWTData
 import com.example.tokentry.storage.clearLoginPreferences
 import com.example.tokentry.storage.getThemePreference
 import com.example.tokentry.storage.saveThemePreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.NetworkInterface
 import java.util.*
 

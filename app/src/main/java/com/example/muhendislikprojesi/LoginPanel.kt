@@ -3,7 +3,6 @@ package com.example.muhendislikprojesi
 import android.annotation.SuppressLint
 import android.content.Context
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,23 +20,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -57,11 +51,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.auth0.android.jwt.JWT
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.tokentry.retrofitt.ApiUtils
 import com.example.tokentry.retrofitt.AuthService
-import com.example.tokentry.retrofitt.JWTData
 import com.example.tokentry.retrofitt.LoginRequest
 import com.example.tokentry.storage.getLoginInfo
 import com.example.tokentry.storage.getThemePreference
@@ -72,19 +64,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarData
-import androidx.compose.runtime.LaunchedEffect
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -144,10 +123,7 @@ fun LoginPanel(navController: NavController) {
                     ) {
 
                         // Logo Kısmı
-                        Image(
-                            painter = painterResource(id = R.drawable.logo2),
-                            contentDescription = "", modifier = Modifier.size(200.dp)
-                        )
+                        ThemedLogo(darkTheme = isDarkTheme)
 
                         // E-Mail TextField Kısmı
                         TextField(
@@ -251,7 +227,6 @@ fun LoginPanel(navController: NavController) {
                 }
             }
         )
-
     }
 }
 
@@ -293,7 +268,20 @@ fun loginUser(
         }
     }
 }
+@Composable
+fun ThemedLogo(darkTheme: Boolean = isSystemInDarkTheme()) {
+    val logoRes = if (darkTheme) {
+        R.drawable.logo2 // Gece teması için logo (drawable-night/logo2.png)
+    } else {
+        R.drawable.logo2 // Günlük tema için logo (drawable/logo2.png)
+    }
 
+    Image(
+        painter = painterResource(id = logoRes),
+        contentDescription = null,
+        modifier = Modifier.size(200.dp)
+    )
+}
 
 @Preview
 @Composable
