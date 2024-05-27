@@ -58,6 +58,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Date
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +72,7 @@ fun GecmisBildirimler(navController: NavController) {
     LaunchedEffect(Unit) {
         val sharedPreferences = context.getSharedPreferences("jwt_prefs", Context.MODE_PRIVATE)
         val jwt = sharedPreferences.getString("jwt", null)
-        val userId = jwt?.let { decodeJWT(it).userId }
+        val userId = jwt?.let { decodeJwt(it).userId }
 
         if (userId != null) {
             val call = apiService.getAlerts(userId)
@@ -92,42 +93,42 @@ fun GecmisBildirimler(navController: NavController) {
             error = "Kullanıcı ID'si alınamadı"
         }
     }
-    MuhendislikProjesiTheme(darkTheme = getThemePreference(context)) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("Geçmiş Bildirimler") },
-                    navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                )
-            },
-            content = {
-                if (alerts != null) {
-                    LazyColumn {
-                        items(alerts!!) { alert ->
-                            Text(text = alert.title, style = MaterialTheme.typography.titleLarge)
-                            Text(text = alert.content)
-                            Text(text = alert.date)
-                            Divider(modifier = Modifier.padding(vertical = 8.dp))
-                        }
-                    }
-                } else {
-                    error?.let {
-                        Text(text = it, color = MaterialTheme.colorScheme.error)
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Geçmiş Bildirimler") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
                     }
                 }
+            )
+        },
+        content = {
+            if (alerts != null) {
+                LazyColumn {
+                    items(alerts!!) { alert ->
+                        Text(text = alert.message, style = MaterialTheme.typography.titleLarge)
+                        Text(text = "Time: ${Date(alert.time)}")
+                        Text(text = "Type: ${alert.type}")
+                        Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    }
+                }
+            } else {
+                error?.let {
+                    Text(text = it, color = MaterialTheme.colorScheme.error)
+                }
             }
-        )
-    }
-
+        }
+    )
+}
+// JWT'yi decode eden yardımcı fonksiyon
+fun decodeJwt(jwt: String): JWTData {
+    val parts = jwt.split(".")
+    val payload = parts[1]
+    val json = String(Base64.decode(payload, Base64.DEFAULT))
+    return Gson().fromJson(json, JWTData::class.java)
 }
 
 // JWT'yi decode eden yardımcı fonksiyon
@@ -137,6 +138,7 @@ fun decodeJWT(jwt: String): JWTData {
     val json = String(Base64.decode(payload, Base64.DEFAULT))
     return Gson().fromJson(json, JWTData::class.java)
 }
+
 
 @Preview
 @Composable
