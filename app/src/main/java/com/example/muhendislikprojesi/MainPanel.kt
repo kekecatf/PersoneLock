@@ -93,8 +93,9 @@ fun MainPanel(navController: NavController, token: String?) {
                 mail = decodedJWT.getClaim("Mail")?.asString() ?: "",
                 username = decodedJWT.getClaim("Username")?.asString() ?: "",
                 name = decodedJWT.getClaim("Name")?.asString() ?: "",
-                role = decodedJWT.getClaim("Role")?.asString() ?: "",
+                department = decodedJWT.getClaim("Department")?.asString() ?: "",
                 userId = decodedJWT.getClaim("UserID")?.asString() ?: "",
+                role = decodedJWT.getClaim("Role")?.asString() ?: "",
                 nbf = decodedJWT.getClaim("nbf")?.asLong() ?: 0L,
                 exp = decodedJWT.getClaim("exp")?.asLong() ?: 0L,
                 issuer = decodedJWT.issuer ?: "",
@@ -173,16 +174,16 @@ fun MainPanel(navController: NavController, token: String?) {
                         )
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
                             jwtData?.let { data ->
-                                Text(text = "${data.role}",
+                                Text(text = "${data.name}",
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold)
-                                Text(text = "${data.name}",
+                                Text(text = "${data.department}",
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     fontSize = 16.sp)
                                 Text(text = "${data.mail}",
