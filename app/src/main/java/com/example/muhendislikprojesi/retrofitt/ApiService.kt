@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
+//Web Servisler
 interface AuthService {
     @POST("api/Auth/mobileLogin")
     fun mobileLogin(@Body loginRequest: LoginRequest): Call<LoginResponse>

@@ -52,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
+import com.example.muhendislikprojesi.ui.theme.ThemedLogo
 import com.example.tokentry.retrofitt.ApiUtils
 import com.example.tokentry.retrofitt.AuthService
 import com.example.tokentry.retrofitt.LoginRequest
@@ -123,7 +124,7 @@ fun LoginPanel(navController: NavController) {
                     ) {
 
                         // Logo Kısmı
-                        ThemedLogo(darkTheme = isDarkTheme)
+                        ThemedLogo(darkTheme = isDarkTheme,200)
 
                         // E-Mail TextField Kısmı
                         TextField(
@@ -230,6 +231,7 @@ fun LoginPanel(navController: NavController) {
     }
 }
 
+//Kullanıcı Giriş Bilgilerini Post Eden Fonksiyon
 fun loginUser(
     context: Context,
     loginRequest: LoginRequest,
@@ -268,20 +270,7 @@ fun loginUser(
         }
     }
 }
-@Composable
-fun ThemedLogo(darkTheme: Boolean = isSystemInDarkTheme()) {
-    val logoRes = if (darkTheme) {
-        R.drawable.logo2 // Gece teması için logo (drawable-night/logo2.png)
-    } else {
-        R.drawable.logo2 // Günlük tema için logo (drawable/logo2.png)
-    }
 
-    Image(
-        painter = painterResource(id = logoRes),
-        contentDescription = null,
-        modifier = Modifier.size(200.dp)
-    )
-}
 
 @Preview
 @Composable

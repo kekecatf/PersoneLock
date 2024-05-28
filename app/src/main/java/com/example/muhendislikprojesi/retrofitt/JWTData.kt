@@ -1,5 +1,6 @@
 package com.example.tokentry.retrofitt
 
+//Kullanıcı Verileri Sınıfı
 data class JWTData(
     val mail: String,
     val username: String,

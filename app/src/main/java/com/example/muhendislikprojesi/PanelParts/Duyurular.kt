@@ -1,6 +1,5 @@
 package com.example.tokentry.PanelParts
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -142,6 +141,7 @@ fun Duyurular(navController: NavController) {
     }
 }
 
+//Dinamik Olarak Card Yapısı Oluştuan Fonksiyon
 @Composable
 fun AnnouncementItem(announcement: Announcement) {
     Card(

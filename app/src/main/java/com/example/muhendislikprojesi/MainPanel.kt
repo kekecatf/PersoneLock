@@ -65,6 +65,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import com.auth0.android.jwt.JWT
+import com.example.muhendislikprojesi.retrofitt.decodeJWT
+import com.example.muhendislikprojesi.ui.theme.ThemedLogo
 import com.example.tokentry.retrofitt.ApiUtils
 import com.example.tokentry.retrofitt.JWTData
 import com.example.tokentry.storage.clearLoginPreferences
@@ -112,7 +114,7 @@ fun MainPanel(navController: NavController, token: String?) {
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "Ana Panel")
+                        ThemedLogo(darkTheme = isDarkTheme,150)
                     },
                     actions = {
                         var expanded by remember { mutableStateOf(false) }
@@ -160,7 +162,11 @@ fun MainPanel(navController: NavController, token: String?) {
                         modifier = Modifier
                             .size(200.dp)
                             .clip(RoundedCornerShape(75.dp))
-                            .border(2.dp, MaterialTheme.colorScheme.onBackground, RoundedCornerShape(75.dp))
+                            .border(
+                                2.dp,
+                                MaterialTheme.colorScheme.onBackground,
+                                RoundedCornerShape(75.dp)
+                            )
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -174,22 +180,24 @@ fun MainPanel(navController: NavController, token: String?) {
                         )
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
                             jwtData?.let { data ->
-                                Text(text = "${data.name}",
+                                Text(text = "Kullanıcı İsmi: ${data.name}",
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold)
-                                Text(text = "${data.department}",
+                                Text(text = "Departman: ${data.department}",
                                     color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 16.sp)
-                                Text(text = "${data.mail}",
+                                    fontSize = 18.sp)
+                                Text(text = " Kullanıcı ID: ${data.userId}",
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     fontSize = 14.sp)
-                                Text(text = "ID: ${data.userId}",
+                                Text(text = "E-Posta: ${data.mail}",
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     fontSize = 14.sp)
                             }
@@ -226,14 +234,6 @@ fun MainPanel(navController: NavController, token: String?) {
     }
 }
 
-//Token Çözümleme İçin Fonksiyon
-fun decodeJWT(token: String): JWT? {
-    return try {
-        JWT(token)
-    } catch (exception: Exception) {
-        null
-    }
-}
 
 
 @Preview

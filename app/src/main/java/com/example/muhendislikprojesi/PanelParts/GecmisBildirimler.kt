@@ -47,8 +47,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.muhendislikprojesi.R
 import com.example.muhendislikprojesi.SayfaGecisleri
-import com.example.muhendislikprojesi.decodeJWT
 import com.example.muhendislikprojesi.retrofitt.Alert
+import com.example.muhendislikprojesi.retrofitt.decodeJWT
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.tokentry.retrofitt.ApiUtils
 import com.example.tokentry.retrofitt.AuthService
@@ -134,7 +134,7 @@ fun GecmisBildirimler(navController: NavController, token: String?) {
         )
     }
 }
-
+//Dinamik Olarak Card Yapısı Oluştuan Fonksiyon
 @Composable
 fun AlertItem(alert: Alert) {
     Card(

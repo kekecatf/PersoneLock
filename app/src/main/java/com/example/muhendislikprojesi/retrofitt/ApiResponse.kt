@@ -1,6 +1,6 @@
 package com.example.tokentry.retrofitt
 
-// Kullanıcı girişi yanıtı
+//Kullanıcı Girişi Yanıtı İçin Sınıf
 data class LoginResponse(
     val token: String,
     val message: String
