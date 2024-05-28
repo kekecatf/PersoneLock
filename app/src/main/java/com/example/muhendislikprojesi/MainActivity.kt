@@ -13,7 +13,6 @@ import androidx.navigation.navArgument
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.tokentry.PanelParts.Duyurular
 import com.example.tokentry.PanelParts.GecmisBildirimler
-import com.example.tokentry.PanelParts.KayitliCihazlar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +48,6 @@ fun SayfaGecisleri() {
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             GecmisBildirimler(navController = navController, token = token)
-        }
-        composable("KayitliCihazlar") {
-            KayitliCihazlar(navController = navController)
         }
     }
 }

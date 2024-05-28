@@ -133,10 +133,6 @@ fun MainPanel(navController: NavController, token: String?) {
                                 onClick = { navController.navigate("GecmisBildirimler/$token") },
                                 text = { Text(text = "GecmisBildirimler") }
                             )
-                            DropdownMenuItem(
-                                onClick = { navController.navigate("KayitliCihazlar") },
-                                text = { Text(text = "KayitliCihazlar") }
-                            )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -147,88 +143,96 @@ fun MainPanel(navController: NavController, token: String?) {
                 )
             },
             content = { paddingValues ->
-                Column(
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.SpaceEvenly,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    Image(
-                        painter = painterResource(id = R.drawable.biyometrik),
-                        contentDescription = "",
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ){
+                    Column(
                         modifier = Modifier
-                            .size(200.dp)
-                            .clip(RoundedCornerShape(75.dp))
-                            .border(
-                                2.dp,
-                                MaterialTheme.colorScheme.onBackground,
-                                RoundedCornerShape(75.dp)
-                            )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.SpaceEvenly,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
+
+                        Image(
+                            painter = painterResource(id = R.drawable.biyometrik),
+                            contentDescription = "",
                             modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                                .size(200.dp)
+                                .clip(RoundedCornerShape(75.dp))
+                                .border(
+                                    2.dp,
+                                    MaterialTheme.colorScheme.onBackground,
+                                    RoundedCornerShape(75.dp)
+                                )
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
                         ) {
-                            jwtData?.let { data ->
-                                Text(text = "Kullanıcı İsmi: ${data.name}",
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold)
-                                Text(text = "Departman: ${data.department}",
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 18.sp)
-                                Text(text = " Kullanıcı ID: ${data.userId}",
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 14.sp)
-                                Text(text = "E-Posta: ${data.mail}",
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    fontSize = 14.sp)
+                            Column(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                jwtData?.let { data ->
+                                    Text(text = "Kullanıcı İsmi: ${data.name}",
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Bold)
+                                    Text(text = "Departman: ${data.department}",
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontSize = 18.sp)
+                                    Text(text = " Kullanıcı ID: ${data.userId}",
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontSize = 14.sp)
+                                    Text(text = "E-Posta: ${data.mail}",
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        fontSize = 14.sp)
+                                }
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    Switch(
-                        checked = isDarkTheme,
-                        onCheckedChange = {
-                            isDarkTheme = it
-                            saveThemePreference(context, it)
+                        Switch(
+                            checked = isDarkTheme,
+                            onCheckedChange = {
+                                isDarkTheme = it
+                                saveThemePreference(context, it)
+                            }
+                        )
+
+                        // Çıkış Butonu
+                        Button(
+                            onClick = {
+                                // "Beni Hatırla" işlevini sıfırla
+                                clearLoginPreferences(context)
+                                // LoginPanel'e dön
+                                navController.navigate("LoginPanel")
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        ) {
+                            Text("Hesaptan Çık")
                         }
-                    )
-
-                    // Çıkış Butonu
-                    Button(
-                        onClick = {
-                            // "Beni Hatırla" işlevini sıfırla
-                            clearLoginPreferences(context)
-                            // LoginPanel'e dön
-                            navController.navigate("LoginPanel")
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    ) {
-                        Text("Hesaptan Çık")
                     }
                 }
+
             }
         )
     }
