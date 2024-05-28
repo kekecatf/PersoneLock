@@ -124,7 +124,7 @@ fun LoginPanel(navController: NavController) {
                     ) {
 
                         // Logo Kısmı
-                        ThemedLogo(darkTheme = isDarkTheme,200)
+                        ThemedLogo(darkTheme = isDarkTheme, 200)
 
                         // E-Mail TextField Kısmı
                         TextField(
