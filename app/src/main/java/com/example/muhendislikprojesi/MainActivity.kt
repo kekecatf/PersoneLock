@@ -43,8 +43,12 @@ fun SayfaGecisleri() {
         composable("Duyurular") {
             Duyurular(navController = navController)
         }
-        composable("GecmisBildirimler") {
-            GecmisBildirimler(navController = navController)
+        composable(
+            route = "GecmisBildirimler/{token}",
+            arguments = listOf(navArgument("token") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val token = backStackEntry.arguments?.getString("token")
+            GecmisBildirimler(navController = navController, token = token)
         }
         composable("KayitliCihazlar") {
             KayitliCihazlar(navController = navController)

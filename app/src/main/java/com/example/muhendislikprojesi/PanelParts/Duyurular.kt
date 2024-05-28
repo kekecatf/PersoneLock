@@ -129,7 +129,7 @@ MuhendislikProjesiTheme(darkTheme = getThemePreference(context)) {
                                             },
                                             modifier = Modifier.align(Alignment.Center)
                                         ) {
-                                            Text(if (showAllAnnouncements) "Küçült" else "Genişlet")
+                                            Text(if (showAllAnnouncements) "Daralt" else "Genişlet")
                                         }
                                     }
                                 }

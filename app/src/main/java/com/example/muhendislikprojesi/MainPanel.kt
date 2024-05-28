@@ -123,13 +123,16 @@ fun MainPanel(navController: NavController, token: String?) {
                         ) {
                             DropdownMenuItem(
                                 onClick = { navController.navigate("Duyurular") },
-                                text = { Text(text = "Duyurular") })
+                                text = { Text(text = "Duyurular") }
+                            )
                             DropdownMenuItem(
-                                onClick = { navController.navigate("GecmisBildirimler") },
-                                text = { Text(text = "GecmisBildirimler") })
+                                onClick = { navController.navigate("GecmisBildirimler/$token") },
+                                text = { Text(text = "GecmisBildirimler") }
+                            )
                             DropdownMenuItem(
                                 onClick = { navController.navigate("KayitliCihazlar") },
-                                text = { Text(text = "KayitliCihazlar") })
+                                text = { Text(text = "KayitliCihazlar") }
+                            )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -219,7 +222,6 @@ fun MainPanel(navController: NavController, token: String?) {
         )
     }
 }
-
 
 //Token Çözümleme İçin Fonksiyon
 fun decodeJWT(token: String): JWT? {

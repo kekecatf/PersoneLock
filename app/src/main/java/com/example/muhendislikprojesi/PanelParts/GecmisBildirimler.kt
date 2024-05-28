@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,12 +47,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.muhendislikprojesi.R
 import com.example.muhendislikprojesi.SayfaGecisleri
+import com.example.muhendislikprojesi.decodeJWT
 import com.example.muhendislikprojesi.retrofitt.Alert
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.tokentry.retrofitt.ApiUtils
+import com.example.tokentry.retrofitt.AuthService
 import com.example.tokentry.retrofitt.JWTData
 import com.example.tokentry.storage.getThemePreference
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,82 +67,110 @@ import java.util.Date
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GecmisBildirimler(navController: NavController) {
+fun GecmisBildirimler(navController: NavController, token: String?) {
     val context = LocalContext.current
     val apiService = ApiUtils.getAuthService()
     var alerts by remember { mutableStateOf<List<Alert>?>(null) }
-    var error by remember { mutableStateOf<String?>(null) }
+    var jwtData by remember { mutableStateOf<JWTData?>(null) }
 
-    LaunchedEffect(Unit) {
-        val sharedPreferences = context.getSharedPreferences("jwt_prefs", Context.MODE_PRIVATE)
-        val jwt = sharedPreferences.getString("jwt", null)
-        val userId = jwt?.let { decodeJwt(it).userId }
-
-        if (userId != null) {
-            val call = apiService.getAlerts(userId)
-            call.enqueue(object : Callback<List<Alert>> {
-                override fun onResponse(call: Call<List<Alert>>, response: Response<List<Alert>>) {
-                    if (response.isSuccessful) {
-                        alerts = response.body()
-                    } else {
-                        error = "Geçmiş bildirimler yüklenemedi"
-                    }
-                }
-
-                override fun onFailure(call: Call<List<Alert>>, t: Throwable) {
-                    error = "Geçmiş bildirimler yüklenemedi: ${t.message}"
-                }
-            })
-        } else {
-            error = "Kullanıcı ID'si alınamadı"
+    token?.let {
+        jwtData = decodeJWT(it)?.let { decodedJWT ->
+            JWTData(
+                mail = decodedJWT.getClaim("Mail")?.asString() ?: "",
+                username = decodedJWT.getClaim("Username")?.asString() ?: "",
+                name = decodedJWT.getClaim("Name")?.asString() ?: "",
+                role = decodedJWT.getClaim("Role")?.asString() ?: "",
+                userId = decodedJWT.getClaim("UserID")?.asString() ?: "",
+                nbf = decodedJWT.getClaim("nbf")?.asLong() ?: 0L,
+                exp = decodedJWT.getClaim("exp")?.asLong() ?: 0L,
+                issuer = decodedJWT.issuer ?: "",
+                audience = decodedJWT.audience?.joinToString(",") ?: ""
+            )
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Geçmiş Bildirimler") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+    jwtData?.userId?.let { userId ->
+        fetchAlerts(userId, apiService) { result ->
+            alerts = result
+        }
+    }
+
+    MuhendislikProjesiTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Geçmiş Bildirimler") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Geri")
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                )
+            },
+            content = { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(16.dp)
+                ) {
+                    alerts?.let {
+                        LazyColumn {
+                            items(it) { alert ->
+                                AlertItem(alert)
+                            }
+                        }
+                    } ?: run {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
-                }
-            )
-        },
-        content = {
-            if (alerts != null) {
-                LazyColumn {
-                    items(alerts!!) { alert ->
-                        Text(text = alert.message, style = MaterialTheme.typography.titleLarge)
-                        Text(text = "Time: ${Date(alert.time)}")
-                        Text(text = "Type: ${alert.type}")
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
-                    }
-                }
-            } else {
-                error?.let {
-                    Text(text = it, color = MaterialTheme.colorScheme.error)
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun AlertItem(alert: Alert) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Mesaj: ${alert.message}")
+            Text(text = "Zaman: ${alert.time}") // Time formatlama yapabilirsiniz.
+            Text(text = "Tip: ${alert.type}")
+            Text(text = "Giriş: ${if (alert.entry) "Evet" else "Hayır"}")
         }
-    )
-}
-// JWT'yi decode eden yardımcı fonksiyon
-fun decodeJwt(jwt: String): JWTData {
-    val parts = jwt.split(".")
-    val payload = parts[1]
-    val json = String(Base64.decode(payload, Base64.DEFAULT))
-    return Gson().fromJson(json, JWTData::class.java)
+    }
 }
 
-// JWT'yi decode eden yardımcı fonksiyon
-fun decodeJWT(jwt: String): JWTData {
-    val parts = jwt.split(".")
-    val payload = parts[1]
-    val json = String(Base64.decode(payload, Base64.DEFAULT))
-    return Gson().fromJson(json, JWTData::class.java)
+fun fetchAlerts(userId: String, apiService: AuthService, onResult: (List<Alert>?) -> Unit) {
+    CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = apiService.getAlerts(userId).execute()
+            if (response.isSuccessful) {
+                val alerts = response.body()
+                withContext(Dispatchers.Main) {
+                    onResult(alerts)
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    onResult(null)
+                }
+            }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                onResult(null)
+            }
+        }
+    }
 }
-
 
 @Preview
 @Composable
