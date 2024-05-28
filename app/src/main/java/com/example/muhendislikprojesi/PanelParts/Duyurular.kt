@@ -62,8 +62,8 @@ fun Duyurular(navController: NavController) {
             try {
                 val response = withContext(Dispatchers.IO) { apiService.getAnnouncements().execute() }
                 if (response.isSuccessful) {
-                    allAnnouncements = response.body() ?: emptyList()
-                    announcements = allAnnouncements.takeLast(5)
+                    allAnnouncements = response.body()?.reversed() ?: emptyList()
+                    announcements = allAnnouncements.take(5)
                 } else {
                     errorMessage = "Failed to load announcements: ${response.code()}"
                 }
@@ -73,22 +73,22 @@ fun Duyurular(navController: NavController) {
         }
     }
 
-MuhendislikProjesiTheme(darkTheme = getThemePreference(context)) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Duyurular") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+    MuhendislikProjesiTheme(darkTheme = getThemePreference(context)) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(text = "Duyurular") },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
-            )
             },
             content = { paddingValues ->
                 Box(
@@ -124,7 +124,7 @@ MuhendislikProjesiTheme(darkTheme = getThemePreference(context)) {
                                                 announcements = if (showAllAnnouncements) {
                                                     allAnnouncements
                                                 } else {
-                                                    allAnnouncements.takeLast(5)
+                                                    allAnnouncements.take(5)
                                                 }
                                             },
                                             modifier = Modifier.align(Alignment.Center)

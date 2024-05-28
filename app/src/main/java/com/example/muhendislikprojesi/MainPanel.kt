@@ -48,6 +48,7 @@ import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -151,6 +152,7 @@ fun MainPanel(navController: NavController, token: String?) {
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+
                     Image(
                         painter = painterResource(id = R.drawable.biyometrik),
                         contentDescription = "",
