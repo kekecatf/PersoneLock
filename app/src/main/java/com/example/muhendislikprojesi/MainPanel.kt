@@ -239,7 +239,6 @@ fun MainPanel(navController: NavController, token: String?) {
 }
 
 
-
 @Preview
 @Composable
 fun MainPanelPreview(){

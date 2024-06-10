@@ -130,7 +130,7 @@ fun LoginPanel(navController: NavController) {
                         TextField(
                             value = email,
                             onValueChange = { email = it },
-                            label = { Text("Kullanıcı Adı") },
+                            label = { Text("E-Posta") },
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = colorScheme.background,
                                 unfocusedContainerColor = colorScheme.background,

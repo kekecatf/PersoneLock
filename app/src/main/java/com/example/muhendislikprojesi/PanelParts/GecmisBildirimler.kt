@@ -96,7 +96,7 @@ fun GecmisBildirimler(navController: NavController, token: String?) {
         }
     }
 
-    MuhendislikProjesiTheme {
+    MuhendislikProjesiTheme(darkTheme = getThemePreference(context)) {
         Scaffold(
             topBar = {
                 TopAppBar(
