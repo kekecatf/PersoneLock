@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.muhendislikprojesi.PanelParts.WebGorunumu
 import com.example.muhendislikprojesi.ui.theme.MuhendislikProjesiTheme
 import com.example.tokentry.PanelParts.Duyurular
 import com.example.tokentry.PanelParts.GecmisBildirimler
@@ -48,6 +49,9 @@ fun SayfaGecisleri() {
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             GecmisBildirimler(navController = navController, token = token)
+        }
+        composable("WebGorunumu"){
+            WebGorunumu(navController = navController)
         }
     }
 }

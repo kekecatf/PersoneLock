@@ -133,6 +133,10 @@ fun MainPanel(navController: NavController, token: String?) {
                                 onClick = { navController.navigate("GecmisBildirimler/$token") },
                                 text = { Text(text = "GecmisBildirimler") }
                             )
+                            DropdownMenuItem(
+                                onClick = { navController.navigate("WebGorunumu") },
+                                text = { Text(text = "Web Arayüzü") }
+                            )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
