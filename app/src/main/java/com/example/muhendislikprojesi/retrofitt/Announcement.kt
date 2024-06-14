@@ -1,6 +1,6 @@
 package com.example.muhendislikprojesi.retrofitt
 
-//Duyurular İçin Sınıf
+//Duyurular İçin Veri Sınıfı
 data class Announcement(
     val id: Int,
     val title: String,

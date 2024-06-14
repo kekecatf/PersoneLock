@@ -2,7 +2,9 @@ package com.example.tokentry.PanelParts
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.util.Base64
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -63,14 +66,23 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GecmisBildirimler(navController: NavController, token: String?) {
     val context = LocalContext.current
     val apiService = ApiUtils.getAuthService()
-    var alerts by remember { mutableStateOf<List<Alert>?>(null) }
+    val scope = rememberCoroutineScope()
+    var alerts by remember { mutableStateOf<List<Alert>>(emptyList()) }
+    var allAlerts by remember { mutableStateOf<List<Alert>>(emptyList()) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showAllAlerts by remember { mutableStateOf(false) }
     var jwtData by remember { mutableStateOf<JWTData?>(null) }
 
     token?.let {
@@ -91,8 +103,20 @@ fun GecmisBildirimler(navController: NavController, token: String?) {
     }
 
     jwtData?.userId?.let { userId ->
-        fetchAlerts(userId, apiService) { result ->
-            alerts = result
+        LaunchedEffect(Unit) {
+            scope.launch {
+                try {
+                    val response = withContext(Dispatchers.IO) { apiService.getAlerts(userId).execute() }
+                    if (response.isSuccessful) {
+                        allAlerts = response.body()?.reversed() ?: emptyList()
+                        alerts = allAlerts.take(5)
+                    } else {
+                        errorMessage = "Failed to load alerts: ${response.code()}"
+                    }
+                } catch (e: Exception) {
+                    errorMessage = "Error: ${e.message}"
+                }
+            }
         }
     }
 
@@ -120,23 +144,57 @@ fun GecmisBildirimler(navController: NavController, token: String?) {
                         .padding(paddingValues)
                         .padding(16.dp)
                 ) {
-                    alerts?.let {
-                        LazyColumn {
-                            items(it) { alert ->
-                                AlertItem(alert)
+                    when {
+                        errorMessage != null -> {
+                            Text(
+                                text = errorMessage!!,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        alerts.isEmpty() -> {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        }
+                        else -> {
+                            LazyColumn {
+                                items(alerts) { alert ->
+                                    AlertItem(alert)
+                                }
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp)
+                                    ) {
+                                        TextButton(
+                                            onClick = {
+                                                showAllAlerts = !showAllAlerts
+                                                alerts = if (showAllAlerts) {
+                                                    allAlerts
+                                                } else {
+                                                    allAlerts.take(5)
+                                                }
+                                            },
+                                            modifier = Modifier.align(Alignment.Center)
+                                        ) {
+                                            Text(if (showAllAlerts) "Daralt" else "Genişlet")
+                                        }
+                                    }
+                                }
                             }
                         }
-                    } ?: run {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
                 }
             }
         )
     }
 }
-//Dinamik Olarak Card Yapısı Oluştuan Fonksiyon
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlertItem(alert: Alert) {
+    val formattedTime = formatUnixTimestamp(alert.time)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -144,33 +202,21 @@ fun AlertItem(alert: Alert) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(text = "Mesaj: ${alert.message}")
-            Text(text = "Zaman: ${alert.time}") // Time formatlama yapabilirsiniz.
+            Text(text = "Zaman: $formattedTime")
             Text(text = "Tip: ${alert.type}")
             Text(text = "Giriş: ${if (alert.entry) "Evet" else "Hayır"}")
         }
     }
 }
 
-fun fetchAlerts(userId: String, apiService: AuthService, onResult: (List<Alert>?) -> Unit) {
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = apiService.getAlerts(userId).execute()
-            if (response.isSuccessful) {
-                val alerts = response.body()
-                withContext(Dispatchers.Main) {
-                    onResult(alerts)
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    onResult(null)
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                onResult(null)
-            }
-        }
-    }
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatUnixTimestamp(timestamp: Long): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    // Unix zaman damgasının milisaniye mi yoksa saniye mi olduğunu kontrol edelim
+    val millisTimestamp = if (timestamp < 1000000000000L) timestamp * 1000 else timestamp
+    return Instant.ofEpochMilli(millisTimestamp)
+        .atZone(ZoneId.systemDefault())
+        .format(formatter)
 }
 
 @Preview

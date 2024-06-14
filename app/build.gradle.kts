@@ -71,17 +71,18 @@ dependencies {
     //Navigation(Gradlenin içine)
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    //Sayfalar arası veri transferi(Nesne Tabanlı)(Gradlenin içine)
+    implementation("com.google.code.gson:gson:2.10.1")
+
     //Retrofit Kütüphane(Gradle içine)
     implementation("com.squareup.retrofit2:retrofit:2.6.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.squareup.retrofit2:converter-gson:2.5.0")
 
-    //Sayfalar arası veri transferi(Nesne Tabanlı)(Gradlenin içine)
-    implementation("com.google.code.gson:gson:2.10.1")
-
     //İcon ekleme
     implementation ("androidx.compose.material:material-icons-extended")
 
+    //Arayüz İçin
     implementation("androidx.compose.ui:ui-text-android:1.6.7")
     implementation("androidx.compose.foundation:foundation-android:1.6.7")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
