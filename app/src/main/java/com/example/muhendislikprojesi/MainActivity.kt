@@ -1,8 +1,10 @@
 package com.example.muhendislikprojesi
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
@@ -16,6 +18,7 @@ import com.example.tokentry.PanelParts.Duyurular
 import com.example.tokentry.PanelParts.GecmisBildirimler
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -24,6 +27,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SayfaGecisleri() {
     val navController = rememberNavController()
@@ -45,7 +49,8 @@ fun SayfaGecisleri() {
         }
         composable(
             route = "GecmisBildirimler/{token}",
-            arguments = listOf(navArgument("token") { type = NavType.StringType })
+            arguments = listOf(navArgument("token") {
+                type = NavType.StringType })
         ) { backStackEntry ->
             val token = backStackEntry.arguments?.getString("token")
             GecmisBildirimler(navController = navController, token = token)
@@ -56,6 +61,7 @@ fun SayfaGecisleri() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun SayfaGecisleriPreview() {

@@ -63,6 +63,7 @@ import com.example.tokentry.storage.saveLoginInfo
 import com.example.tokentry.storage.saveThemePreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -231,47 +232,79 @@ fun LoginPanel(navController: NavController) {
     }
 }
 
-//Kullanıcı Giriş Bilgilerini Post Eden Fonksiyon
+////Kullanıcı Giriş Bilgilerini Post Eden Fonksiyon
+//fun loginUser(
+//    context: Context,
+//    loginRequest: LoginRequest,
+//    apiService: AuthService,
+//    rememberMe: Boolean,
+//    onResult: (String?, String?) -> Unit
+//) {
+//    CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val response = apiService.mobileLogin(loginRequest).execute()
+//            if (response.isSuccessful) {
+//                val loginResponse = response.body()
+//                val token = loginResponse?.token
+//                val message = loginResponse?.message
+//                withContext(Dispatchers.Main) {
+//                    if (message == "Giriş başarılı") {  // Success message
+//                        if (rememberMe) {
+//                            saveLoginInfo(context, loginRequest.email, loginRequest.password, true)
+//                        } else {
+//                            saveLoginInfo(context, "", "", false)
+//                        }
+//                        onResult("Giriş başarılı", token)
+//                    } else {
+//                        onResult("Giriş başarısız: $message", null)
+//                    }
+//                }
+//            } else {
+//                withContext(Dispatchers.Main) {
+//                    onResult("Failed to login: ${response.code()}", null)
+//                }
+//            }
+//        } catch (e: Exception) {
+//            withContext(Dispatchers.Main) {
+//                onResult("Error: ${e.message}", null)
+//            }
+//        }
+//    }
+//}
+
+//Mock LoginUser fonksiyonu
 fun loginUser(
     context: Context,
     loginRequest: LoginRequest,
-    apiService: AuthService,
+    apiService: AuthService?, // Kullanılmıyor ama yapıyı koruyoruz
     rememberMe: Boolean,
     onResult: (String?, String?) -> Unit
 ) {
     CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = apiService.mobileLogin(loginRequest).execute()
-            if (response.isSuccessful) {
-                val loginResponse = response.body()
-                val token = loginResponse?.token
-                val message = loginResponse?.message
-                withContext(Dispatchers.Main) {
-                    if (message == "Giriş başarılı") {  // Success message
-                        if (rememberMe) {
-                            saveLoginInfo(context, loginRequest.email, loginRequest.password, true)
-                        } else {
-                            saveLoginInfo(context, "", "", false)
-                        }
-                        onResult("Giriş başarılı", token)
-                    } else {
-                        onResult("Giriş başarısız: $message", null)
-                    }
+        delay(1000) // Gerçekçi bir gecikme simülasyonu (isteğe bağlı)
+
+        withContext(Dispatchers.Main) {
+            // Mock kullanıcı bilgileri
+            val validEmail = "test@example.com"
+            val validPassword = "password123"
+
+            if (loginRequest.email == validEmail && loginRequest.password == validPassword) {
+                val mockToken = "mock_token_123"
+                if (rememberMe) {
+                    saveLoginInfo(context, loginRequest.email, loginRequest.password, true)
+                } else {
+                    saveLoginInfo(context, "", "", false)
                 }
+                onResult("Giriş başarılı", mockToken)
             } else {
-                withContext(Dispatchers.Main) {
-                    onResult("Failed to login: ${response.code()}", null)
-                }
-            }
-        } catch (e: Exception) {
-            withContext(Dispatchers.Main) {
-                onResult("Error: ${e.message}", null)
+                onResult("Giriş başarısız: Bilgiler yanlış", null)
             }
         }
     }
 }
 
 
+@SuppressLint("NewApi")
 @Preview
 @Composable
 fun LoginPanelPreview(){

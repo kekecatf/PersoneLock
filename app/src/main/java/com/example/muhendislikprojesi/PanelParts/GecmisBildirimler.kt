@@ -219,6 +219,7 @@ fun formatUnixTimestamp(timestamp: Long): String {
         .format(formatter)
 }
 
+@SuppressLint("NewApi")
 @Preview
 @Composable
 fun GecmisBildirimlerPreview(){

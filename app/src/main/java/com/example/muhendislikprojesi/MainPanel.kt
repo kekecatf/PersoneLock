@@ -243,6 +243,7 @@ fun MainPanel(navController: NavController, token: String?) {
 }
 
 
+@SuppressLint("NewApi")
 @Preview
 @Composable
 fun MainPanelPreview(){

@@ -1,5 +1,6 @@
 package com.example.tokentry.PanelParts
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -159,6 +160,7 @@ fun AnnouncementItem(announcement: Announcement) {
     }
 }
 
+@SuppressLint("NewApi")
 @Preview
 @Composable
 fun DuyurularPreview(){
